@@ -1,0 +1,33 @@
+NON-TERMINALS: [CLV, CONSTS, FUNCS, LABELS, VARS]
+TERMINALS:     [;]
+START SYMBOL:  CLV
+     RULES:
+(0) CLV -> CONSTS
+(1) CLV -> CONSTS ; CLV
+(2) CLV -> LABELS
+(3) CLV -> LABELS ; CLV
+(4) CLV -> VARS
+(5) CLV -> VARS ; CLV
+(6) CLV -> FUNCS
+(7) CLV -> FUNCS ; CLVГрамматика операторного предшествования
+Таблица переноса и свертки
+                |   €   
+----------------+--------
+; [CLV, ;, CLV] | 1, CLV
+----------------+--------
+# [CLV, ;, CLV] | 1, CLV
+
+         | ; | $
+---------+---+---
+ [;, C]  | S | R
+---------+---+---
+  [#]    | S |  
+---------+---+---
+[#, CLV] | S | A
+
+Отношения предшествования
+  |  ;   |  $  
+--+------+------
+; | [<.] | [.>]
+--+------+------
+# | [<.] |     
