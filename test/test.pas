@@ -11,7 +11,7 @@ begin
 	new (r);
 end;
 
-operator + a, b : integer asd:real;
+operator + (a, b : integer) asd:real;
 begin
 
 end;
