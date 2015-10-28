@@ -13,10 +13,10 @@ std::vector<OutFoldRule> outFoldRules;
 class CurGram {
 public:
     CurGram (int i, int f) : id(i), firstElemInCS(f) {};
-	// ID of Gramm
-	int id;
-	// Pointer of first element by gramm in common stack
-	int firstElemInCS;
+    // ID of Gramm
+    int id;
+    // Pointer of first element by gramm in common stack
+    int firstElemInCS;
 };
 
 
@@ -48,35 +48,35 @@ bool isAtB(token_t a, token_t b) {
 
 int findTokenInGram(int gi, token_t t) {
     std::cout << "findTokenInGram(gi=" << gi << ", t="; pT(t); std::cout  << ")" << std::endl;
-	Gramm& g = grams[gi];
+    Gramm& g = grams[gi];
     // std::cout << "1\n";
-	// Если текущий символ есть в текущей грамматике
+    // Если текущий символ есть в текущей грамматике
     if (isTokenInGram(gi, t)) {
         // std::cout << "2\n";
         //tokensUsedInFindGram.clear();
         // std::cout << "3\n";
-		// Возможно символ все-таки принадлежит не этой грамматике
-		token_t nextT = tokens[1].id;
-		switch(gi) {
-			case 1:
+        // Возможно символ все-таки принадлежит не этой грамматике
+        token_t nextT = tokens[1].id;
+        switch(gi) {
+            case 1:
                 // Может надо проверять, что t == _SEMCOL ?
-				if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
-				break;
-			case 2:
-				if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
-				break;
-			case 3:
-				if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
-				break;
-			case 4:
-				if (t == _SEMCOL && commonStack.top().id == FUNCS) {
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                break;
+            case 2:
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                break;
+            case 3:
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                break;
+            case 4:
+                if (t == _SEMCOL && commonStack.top().id == FUNCS) {
                     Symbol s1 = commonStack.top();
                     commonStack.pop();
                     Symbol s2 = commonStack.top();
                     commonStack.push(s1);
                     if (s2.id == _SEMCOL || s2.id == _HASH) return -1;
                 }
-				break;
+                break;
             case 7:
                 if (t == _CBRACK && commonStack.top().id == AEXP) {
                     Symbol s1 = commonStack.top();
@@ -87,8 +87,8 @@ int findTokenInGram(int gi, token_t t) {
                 }
                 break;
             case 15:
-				if (t == _SEMCOL && commonStack.top().id == _END) return -1;
-				else if (t == _SEMCOL && commonStack.top().id == COP) {
+                if (t == _SEMCOL && commonStack.top().id == _END) return -1;
+                else if (t == _SEMCOL && commonStack.top().id == COP) {
                     Symbol s1 = commonStack.top();
                     commonStack.pop();
                     Symbol s2 = commonStack.top();
@@ -96,9 +96,9 @@ int findTokenInGram(int gi, token_t t) {
                     if (s2.id == _HASH) return -1;
                 }
                 break;
-			case 23:
-				if (t == _SEMCOL && (nextT == _BEGIN)) return -1;
-				break;
+            case 23:
+                if (t == _SEMCOL && (nextT == _BEGIN)) return -1;
+                break;
             case 26:
                 if (t == _SEMCOL && commonStack.top().id == OPOP) {
                     Symbol s1 = commonStack.top();
@@ -108,159 +108,159 @@ int findTokenInGram(int gi, token_t t) {
                     if (s2.id == _SEMCOL || s2.id == _HASH) return -1;
                 }
                 break;
-		}
+        }
         return gi;
     }
-	// Поиск грамматики, в которую надо перейти
+    // Поиск грамматики, в которую надо перейти
     else {
-		switch(gi) {
-			case 0:
-				if (t == _ID) return 6;
-				else if (t == _CONST) return 23;
-				else if (t == _VAR) return 23;
-				else if (t == _LABEL) return 23;
-				else if (t == _FUNC) return 23;
-				else if (t == _BEGIN) return 15;
+        switch(gi) {
+            case 0:
+                if (t == _ID) return 6;
+                else if (t == _CONST) return 23;
+                else if (t == _VAR) return 23;
+                else if (t == _LABEL) return 23;
+                else if (t == _FUNC) return 23;
+                else if (t == _BEGIN) return 15;
                 else if (t == _OPER) return 26;
-				break;
-			case 1:
-				if (t == _ID) return 6;
-				else if (t == _INT) return 5;
-				else if (t == _REAL) return 5;
-				else if (t == _BOOL) return 5;
-				else if (t == _CHAR) return 5;
-				else if (t == _STRING) return 5;
-				break;
-			case 2:
-				if (t == _ID) return 6;
-				else return 9;
-				break;
-			case 3:
-				if (t == _ID) return 6;
-				break;
-			case 4:
-				if (t == _OPER) return 26;
-				else if (t == _BEGIN) return 15;
-				else if (t == _VAR) return 1;
-				else if (t == _ID) return 6;
-				else if (t == _INT) return 5;
-				else if (t == _REAL) return 5;
-				else if (t == _BOOL) return 5;
-				else if (t == _CHAR) return 5;
-				else if (t == _STRING) return 5;
-				break;
-			/* case 5:
-				
-				break; */
-			/* case 6:
-				
-				break; */
-			case 7:
-				if (t == _ID) return 6;
-				break;
-			case 8:
-				// if (t != _STR && tokens[1].id == _REL) return 7;
-				if ((t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) && isAtB(_REL, _SEMCOL) &&
+                break;
+            case 1:
+                if (t == _ID) return 6;
+                else if (t == _INT) return 5;
+                else if (t == _REAL) return 5;
+                else if (t == _BOOL) return 5;
+                else if (t == _CHAR) return 5;
+                else if (t == _STRING) return 5;
+                break;
+            case 2:
+                if (t == _ID) return 6;
+                else return 9;
+                break;
+            case 3:
+                if (t == _ID) return 6;
+                break;
+            case 4:
+                if (t == _OPER) return 26;
+                else if (t == _BEGIN) return 15;
+                else if (t == _VAR) return 1;
+                else if (t == _ID) return 6;
+                else if (t == _INT) return 5;
+                else if (t == _REAL) return 5;
+                else if (t == _BOOL) return 5;
+                else if (t == _CHAR) return 5;
+                else if (t == _STRING) return 5;
+                break;
+            /* case 5:
+                
+                break; */
+            /* case 6:
+                
+                break; */
+            case 7:
+                if (t == _ID) return 6;
+                break;
+            case 8:
+                // if (t != _STR && tokens[1].id == _REL) return 7;
+                if ((t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) && isAtB(_REL, _SEMCOL) &&
                     !(isAtB(_AND, _REL) || isAtB(_OR, _REL))) return 7;
                 else if (t != _STR && commonStack.top().id == _REL) return 7;
                 else if (t == _ID) return 6;
-				break;
-			/* case 9:
-				
-				break; */
-			case 10:
-				if (t == _ID && tokens[1].id == _COLUM) return 6;
-				else if (t == _ID && tokens[1].id == _EQ) return 11;
-				else if (t == _GOTO) return 12;
-				else if (t == _WRITE) return 13;
-				else if (t == _READ) return 14;
-				else if (t == _BEGIN) return 15;
-				else if (t == _IF) return 16;
-				else if (t == _WHILE) return 17;
-				else if (t == _LEN) return 18;
-				else if (t == _CONC) return 19;
-				else if (t == _REPL) return 20;
-				else if (t == _SRCH) return 21;
-				else if (t == _SUBS) return 22;
-				else if (t == _NEWW) return 24;
-				break;
-			case 11:
-				// TODO ////////////////////////////////////////////////
-				if (t == _ID && tokens[1].id == _EQ) return 6;
+                break;
+            /* case 9:
+                
+                break; */
+            case 10:
+                if (t == _ID && tokens[1].id == _COLUM) return 6;
+                else if (t == _ID && tokens[1].id == _EQ) return 11;
+                else if (t == _GOTO) return 12;
+                else if (t == _WRITE) return 13;
+                else if (t == _READ) return 14;
+                else if (t == _BEGIN) return 15;
+                else if (t == _IF) return 16;
+                else if (t == _WHILE) return 17;
+                else if (t == _LEN) return 18;
+                else if (t == _CONC) return 19;
+                else if (t == _REPL) return 20;
+                else if (t == _SRCH) return 21;
+                else if (t == _SUBS) return 22;
+                else if (t == _NEWW) return 24;
+                break;
+            case 11:
+                // TODO ////////////////////////////////////////////////
+                if (t == _ID && tokens[1].id == _EQ) return 6;
                 else if (isAtB(_NOT, _SEMCOL) || isAtB(_OR, _SEMCOL) || isAtB(_AND, _SEMCOL) ||
                          isAtB(_REL, _SEMCOL)) return 8;
                 else if (t == _CC || t == _TRUE || t == _FALSE || t == _STR) return 9;
                 else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) return 7;
-				break;
-			case 12:
-				if (t == _ID) return 6;
-				break;
-			case 13:
-				// TODO ////////////////////////////////////////////////
+                break;
+            case 12:
+                if (t == _ID) return 6;
+                break;
+            case 13:
+                // TODO ////////////////////////////////////////////////
                 if (isAtB(_NOT, _SEMCOL) || isAtB(_OR, _SEMCOL) || isAtB(_AND, _SEMCOL) ||
                          isAtB(_REL, _SEMCOL)) return 8;
                 else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) return 7;
-				break;
-			case 14:
-				if (t == _ID) return 6;
-				break;
-			case 15:
-				if (commonStack.top().id == _END || commonStack.top().id == COP) return -1;
-				//if (t != _BEGIN && t != _END && t != _SEMCOL) return 10;
-				return 10;
-				break;
-			case 16:
-				if (commonStack.top().id == _IF) return 8;
-				else if ((commonStack.top().id == _THEN || commonStack.top().id == _ELSE) && t == _BEGIN) return 15;
-				else if (commonStack.top().id == _THEN || commonStack.top().id == _ELSE) return 10;
-				break;
-			case 17:
-				if (commonStack.top().id == _WHILE) return 8;
-				else if (commonStack.top().id == _DO && t == _BEGIN) return 15;
-				else if (commonStack.top().id == _DO) return 10;
-				break;
-			case 18:
-				if (t == _ID) return 6;
-				break;
-			case 19:
-				if (t == _ID) return 6;
-				break;
-			case 20:
-				if (t == _ID) return 6;
-				break;
-			case 21:
-				if (t == _ID) return 6;
-				break;
-			case 22:
-				if (t == _ID) return 6;
-				break;
-			case 23:
-				if (t == _CONST) return 2;
-				else if (t == _VAR) return 1;
-				else if (t == _LABEL) return 3;
-				else if (t == _FUNC) return 4;
-				else if (t == _OPER) return 4;
-				break;
-			case 24:
-				if (t == _ID) return 6;
-				break;
+                break;
+            case 14:
+                if (t == _ID) return 6;
+                break;
+            case 15:
+                if (commonStack.top().id == _END || commonStack.top().id == COP) return -1;
+                //if (t != _BEGIN && t != _END && t != _SEMCOL) return 10;
+                return 10;
+                break;
+            case 16:
+                if (commonStack.top().id == _IF) return 8;
+                else if ((commonStack.top().id == _THEN || commonStack.top().id == _ELSE) && t == _BEGIN) return 15;
+                else if (commonStack.top().id == _THEN || commonStack.top().id == _ELSE) return 10;
+                break;
+            case 17:
+                if (commonStack.top().id == _WHILE) return 8;
+                else if (commonStack.top().id == _DO && t == _BEGIN) return 15;
+                else if (commonStack.top().id == _DO) return 10;
+                break;
+            case 18:
+                if (t == _ID) return 6;
+                break;
+            case 19:
+                if (t == _ID) return 6;
+                break;
+            case 20:
+                if (t == _ID) return 6;
+                break;
+            case 21:
+                if (t == _ID) return 6;
+                break;
+            case 22:
+                if (t == _ID) return 6;
+                break;
+            case 23:
+                if (t == _CONST) return 2;
+                else if (t == _VAR) return 1;
+                else if (t == _LABEL) return 3;
+                else if (t == _FUNC) return 4;
+                else if (t == _OPER) return 4;
+                break;
+            case 24:
+                if (t == _ID) return 6;
+                break;
             case 25:
-				if (commonStack.top().id == _IF) return 8;
-				else if (commonStack.top().id == _THEN || commonStack.top().id == _ELSE) return 11;
-				break;
+                if (commonStack.top().id == _IF) return 8;
+                else if (commonStack.top().id == _THEN || commonStack.top().id == _ELSE) return 11;
+                break;
             case 26:
                 if (t == _ID) return 6;
                 else if (t == _INT) return 5;
-				else if (t == _REAL) return 5;
-				else if (t == _BOOL) return 5;
-				else if (t == _CHAR) return 5;
-				else if (t == _STRING) return 5;
+                else if (t == _REAL) return 5;
+                else if (t == _BOOL) return 5;
+                else if (t == _CHAR) return 5;
+                else if (t == _STRING) return 5;
                 else if (t == _BEGIN) return 15;
                 break;
             default:
                 break;
-		}
-		
+        }
+        
         return -1;
     }
 }
@@ -377,7 +377,7 @@ int doTransRule(CurGram cg, Symbol s) {
                     }
                     else if (tr.rule == _R) {
                         std::cout << ">> _R\n";
-						bool foldRuleFound = false;
+                        bool foldRuleFound = false;
                         for (int i = 0; i < g.foldRules.size(); i++) {
                             FoldRule& fr = g.foldRules[i];
                             // std::cout << ">>   commonStack.size() - cg.firstElemInCS = " << (commonStack.size() - cg.firstElemInCS) << "; fr.inStack.size() = " << fr.inStack.size() << std::endl;
@@ -398,7 +398,7 @@ int doTransRule(CurGram cg, Symbol s) {
                                 }
                                 
                                 if (isEqual) {
-									foldRuleFound = true;
+                                    foldRuleFound = true;
                                     for (int i = 0; i < fr.inStack.size() - 1; i++) {
                                         commonStack.pop();
                                     }
@@ -421,8 +421,8 @@ int doTransRule(CurGram cg, Symbol s) {
                                 }
                             }
                         }
-						// Если не найдены правила свертки
-						if (!foldRuleFound) {
+                        // Если не найдены правила свертки
+                        if (!foldRuleFound) {
                             std::cout << "    foldRuleFound IS FALSE !!!\n";
                             return 2;
                         }
@@ -478,7 +478,7 @@ void printCurv() {
     //char block[] = { 0xe2, 0x95, 0xBF, '\0' };
     //printf("%s", block);
     //printf("?");
-	printf("└");
+    printf("└");
 }
 
 unsigned int pipes;
@@ -602,32 +602,32 @@ void pCommonStack() {
 }
 
 void syntacticAnalysis() {
-	// Epsilon Symbol
+    // Epsilon Symbol
     Symbol epsSymbol (_EPS, "$", 1);
     tokens.push_back(epsSymbol);
     //Hash Symbol
-	Symbol hashSymbol (_HASH, "#", 0);
+    Symbol hashSymbol (_HASH, "#", 0);
     // Start gram
     CurGram cg (0, 0);
-	// 
-	bool success = true;
-	// Current token
+    // 
+    bool success = true;
+    // Current token
     token_t ct;
-	// 
-	int ing;
-	
-	
-	pTokens();
+    // 
+    int ing;
+    
+    
+    pTokens();
     
     
     // Start from G0
     gramsStack.push(cg);
     // Gramm& g = grams[cg.id];
-	// Put hash in stack (CS)
+    // Put hash in stack (CS)
     commonStack.push(hashSymbol);
     
-	
-	
+    
+    
     // int ing = findTokenInGramWide(cg.id, ct);
     // int ing = findTokenInGram(cg.id, ct);
     // cg = gramsStack.top();
@@ -636,34 +636,34 @@ void syntacticAnalysis() {
     
     int i = 25;
     while (gramsStack.size() > 0 /* && i > 0 */) {
-		i --;
-	
-		// Print info
-        //pGramStack();
-        //pCommonStack();
-        //pTokens();
-        //pOutFoldRules();
-		
+        i --;
+    
+        // Print info
+        pGramStack();
+        pCommonStack();
+        pTokens();
+        pOutFoldRules();
+        
         ct = tokens[0].id;
         cg = gramsStack.top();
         ing = findTokenInGram(cg.id, ct);
-		
-		if (ing == -1) { // Надо делать свертку
+        
+        if (ing == -1) { // Надо делать свертку
             if (doTransRule(cg, epsSymbol) == 2) {
                 success = false; break;
             }
         }
-		else if (cg.id == ing) { // Токен в текущей грамматике
-			if (doTransRule(cg, tokens[0]) == 2) {
+        else if (cg.id == ing) { // Токен в текущей грамматике
+            if (doTransRule(cg, tokens[0]) == 2) {
                 success = false; break;
             }
-		}
-		else {
-			commonStack.push(hashSymbol);
+        }
+        else {
+            commonStack.push(hashSymbol);
             cg.id = ing;
-			cg.firstElemInCS = commonStack.size() - 1;
+            cg.firstElemInCS = commonStack.size() - 1;
             gramsStack.push(cg);
-		}
+        }
         
     }
     

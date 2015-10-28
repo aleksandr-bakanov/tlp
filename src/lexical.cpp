@@ -1091,10 +1091,12 @@ void lexicalAnalysis (std::ifstream &in) {
             case S_168:
                 if      (isNum(c)) { s = S_168; }
                 else if (c == '.') { s = S_169; }
+                else if (isLetter(c)) { unrecErr(c); in.putback(c); s = S_ERROR; }
                 else { saveNum(); in.putback(c); s = S_START; } break;
             case S_169:
                 if      (isNum(c)) { s = S_169; }
                 else if (c == 'E' || c == 'e') { s = S_170; }
+                else if (isLetter(c)) { unrecErr(c); in.putback(c); s = S_ERROR; }
                 else { saveRc(); in.putback(c); s = S_START; } break;
             case S_170:
                 if      (isNum(c)) { s = S_172; }

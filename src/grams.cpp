@@ -20,8 +20,8 @@ public:
     ~Gramm();
     // Gramm id
     int id;
-	// Start non terminal
-	token_t startNonTerm;
+    // Start non terminal
+    token_t startNonTerm;
     // List of non terminals
     std::vector<token_t> nonTerms;
     // List of terminals
@@ -55,7 +55,7 @@ void initGramm0() {
     token_t Terms[] = {_DOT, _SEMCOL, _PROG};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = PROG;
+    g.startNonTerm = PROG;
     g.rulesCount = 5;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {PROG, _PROG, ID, _SEMCOL, OPROG};
@@ -115,7 +115,7 @@ void initGramm1() {
     token_t Terms[] = {_COMMA, _SEMCOL, _COLUM, _VAR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
     g.terms.insert(Terms, Terms + 4);
-	g.startNonTerm = VARS;
+    g.startNonTerm = VARS;
     g.rulesCount = 6;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {VARS, _VAR, RVAR};
@@ -192,7 +192,7 @@ void initGramm2() {
     token_t Terms[] = {_SEMCOL, _REL, _CONST};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 5);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = CONSTS;
+    g.startNonTerm = CONSTS;
     g.rulesCount = 5;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {CONSTS, _CONST, CONST, _SEMCOL, RCONST};
@@ -252,7 +252,7 @@ void initGramm3() {
     token_t Terms[] = {_LABEL, _COMMA};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 2);
-	g.startNonTerm = LABELS;
+    g.startNonTerm = LABELS;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {LABELS, _LABEL, RID};
@@ -295,7 +295,7 @@ void initGramm4() {
     token_t Terms[] = {_COLUM, _SEMCOL, _FUNC};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 8);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = FUNCS;
+    g.startNonTerm = FUNCS;
     g.rulesCount = 5;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {FUNCS, FUNOP};
@@ -353,7 +353,7 @@ void initGramm5() {
     token_t Terms[] = {_BOOL, _CHAR, _INT, _REAL, _STRING};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 1);
     g.terms.insert(Terms, Terms + 5);
-	g.startNonTerm = TYPE;
+    g.startNonTerm = TYPE;
     g.rulesCount = 5;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {TYPE, _INT};
@@ -437,7 +437,7 @@ void initGramm6() {
     token_t Terms[] = {_ID};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 1);
     g.terms.insert(Terms, Terms + 1);
-	g.startNonTerm = ID;
+    g.startNonTerm = ID;
     g.rulesCount = 1;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {ID, _ID};
@@ -465,7 +465,7 @@ void initGramm7() {
     token_t Terms[] = {_OBRACK, _CBRACK, _MULT, _PLUS, _MINUS, _DIV, _NUM, _RC};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 4);
     g.terms.insert(Terms, Terms + 8);
-	g.startNonTerm = AEXP;
+    g.startNonTerm = AEXP;
     g.rulesCount = 12;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {AEXP, TERM};
@@ -650,7 +650,7 @@ void initGramm8() {
     token_t Terms[] = {_OBRACK, _CBRACK, _AND, _NOT, _OR, _REL, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
     g.terms.insert(Terms, Terms + 7);
-	g.startNonTerm = LEXP;
+    g.startNonTerm = LEXP;
     g.rulesCount = 11;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {LEXP, LTERM};
@@ -806,7 +806,7 @@ void initGramm9() {
     token_t Terms[] = {_PLUS, _MINUS, _DOT, _CC, _FALSE, _NUM, _RC, _STR, _TRUE};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 9);
-	g.startNonTerm = C;
+    g.startNonTerm = C;
     g.rulesCount = 10;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {C, DEC};
@@ -1053,7 +1053,7 @@ void initGramm11() {
     token_t Terms[] = {_EQ};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
     g.terms.insert(Terms, Terms + 1);
-	g.startNonTerm = AOP;
+    g.startNonTerm = AOP;
     g.rulesCount = 4;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {AOP, ID, _EQ, ALEXP};
@@ -1090,7 +1090,7 @@ void initGramm12() {
     token_t Terms[] = {_GOTO};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 2);
     g.terms.insert(Terms, Terms + 1);
-	g.startNonTerm = GOP;
+    g.startNonTerm = GOP;
     g.rulesCount = 1;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {GOP, _GOTO, ID};
@@ -1118,7 +1118,7 @@ void initGramm13() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _WRITE, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 5);
     g.terms.insert(Terms, Terms + 5);
-	g.startNonTerm = WOP;
+    g.startNonTerm = WOP;
     g.rulesCount = 6;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {WOP, _WRITE, _OBRACK, RMSG, _CBRACK};
@@ -1205,7 +1205,7 @@ void initGramm14() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _READ};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 4);
-	g.startNonTerm = ROP;
+    g.startNonTerm = ROP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {ROP, _READ, _OBRACK, RID, _CBRACK};
@@ -1268,7 +1268,7 @@ void initGramm15() {
     token_t Terms[] = {_SEMCOL, _BEGIN, _END};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = COP;
+    g.startNonTerm = COP;
     g.rulesCount = 4;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {COP, _BEGIN, ZOMOP, _END};
@@ -1326,7 +1326,7 @@ void initGramm16() {
     token_t Terms[] = {_ELSE, _IF, _THEN};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 5);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = IFOP;
+    g.startNonTerm = IFOP;
     g.rulesCount = 4;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {IFOP, _IF, LEXP, _THEN, OCOP};
@@ -1380,7 +1380,7 @@ void initGramm17() {
     token_t Terms[] = {_DO, _WHILE};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 5);
     g.terms.insert(Terms, Terms + 2);
-	g.startNonTerm = FOROP;
+    g.startNonTerm = FOROP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {FOROP, _WHILE, LEXP, _DO, OCOP};
@@ -1421,7 +1421,7 @@ void initGramm18() {
     token_t Terms[] = {_OBRACK, _CBRACK, _LEN, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 4);
-	g.startNonTerm = LENOP;
+    g.startNonTerm = LENOP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {LENOP, _LEN, _OBRACK, IDSC, _CBRACK};
@@ -1483,7 +1483,7 @@ void initGramm19() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _CONC, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 5);
-	g.startNonTerm = CONOP;
+    g.startNonTerm = CONOP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {CONOP, _CONC, _OBRACK, IDSC, _COMMA, IDSC, _CBRACK};
@@ -1559,7 +1559,7 @@ void initGramm20() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _REPL, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 5);
-	g.startNonTerm = REPOP;
+    g.startNonTerm = REPOP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {REPOP, _REPL, _OBRACK, IDSC, _COMMA, IDSC, _COMMA, IDSC, _CBRACK};
@@ -1635,7 +1635,7 @@ void initGramm21() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _SRCH, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 3);
     g.terms.insert(Terms, Terms + 5);
-	g.startNonTerm = SEOP;
+    g.startNonTerm = SEOP;
     g.rulesCount = 3;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {SEOP, _SRCH, _OBRACK, IDSC, _COMMA, IDSC, _CBRACK};
@@ -1711,7 +1711,7 @@ void initGramm22() {
     token_t Terms[] = {_OBRACK, _CBRACK, _COMMA, _NUM, _SUBS, _STR};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 4);
     g.terms.insert(Terms, Terms + 6);
-	g.startNonTerm = SUBOP;
+    g.startNonTerm = SUBOP;
     g.rulesCount = 5;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {SUBOP, _SUBS, _OBRACK, IDSC, _COMMA, IDNN, _COMMA, IDNN, _CBRACK};
@@ -1808,7 +1808,7 @@ void initGramm23() {
     token_t Terms[] = {_SEMCOL};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 5);
     g.terms.insert(Terms, Terms + 1);
-	g.startNonTerm = CLV;
+    g.startNonTerm = CLV;
     g.rulesCount = 8;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {CLV, CONSTS};
@@ -1858,7 +1858,7 @@ void initGramm24() {
     token_t Terms[] = {_OBRACK, _CBRACK, _NEWW};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 2);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = NEWOP;
+    g.startNonTerm = NEWOP;
     g.rulesCount = 1;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {NEWOP, _NEWW, _OBRACK, ID, _CBRACK};
@@ -1902,7 +1902,7 @@ void initGramm25() {
     token_t Terms[] = {_ELSE, _IF, _THEN};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 4);
     g.terms.insert(Terms, Terms + 3);
-	g.startNonTerm = IFAOP;
+    g.startNonTerm = IFAOP;
     g.rulesCount = 2;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {IFAOP, _IF, LEXP, _THEN, AOP};
@@ -1950,7 +1950,7 @@ void initGramm26() {
     token_t Terms[] = {_OBRACK, _CBRACK, _MULT, _PLUS, _COMMA, _MINUS, _DIV, _COLUM, _SEMCOL, _OPER, _REL};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 8);
     g.terms.insert(Terms, Terms + 11);
-	g.startNonTerm = OPOP;
+    g.startNonTerm = OPOP;
     g.rulesCount = 10;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {OPOP, _OPER, OOP, _OBRACK, OVAR, _CBRACK, ID, _COLUM, TYPE, _SEMCOL, COP};
@@ -2169,7 +2169,7 @@ void initGramm26() {
 void initGrams() {
     grams.clear();
     initGramm0();
-	initGramm1();
+    initGramm1();
     initGramm2();
     initGramm3();
     initGramm4();
