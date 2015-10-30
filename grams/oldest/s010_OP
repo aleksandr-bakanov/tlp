@@ -1,4 +1,4 @@
-NON-TERMINALS: [AOP, CONOP, COP, FOROP, GOP, ID, IFAOP, IFOP, LENOP, NEWOP, OP, REPOP, ROP, SEOP, SUBOP, UMOP, WOP]
+NON-TERMINALS: [AOP, COP, FOROP, GOP, ID, IFAOP, IFOP, NEWOP, OP, ROP, UMOP, WOP]
 TERMINALS:     [:]
 START SYMBOL:  OP
      RULES:
@@ -11,13 +11,8 @@ START SYMBOL:  OP
 (6) UMOP -> COP
 (7) UMOP -> IFOP
 (8) UMOP -> FOROP
-(9) UMOP -> CONOP
-(10) UMOP -> REPOP
-(11) UMOP -> SEOP
-(12) UMOP -> SUBOP
-(13) UMOP -> NEWOP
-(14) UMOP -> IFAOP
-(15) UMOP -> LENOP
+(9) UMOP -> NEWOP
+(10) UMOP -> IFAOP
 Грамматика операторного предшествования
 Таблица переноса и свертки
               |   €  

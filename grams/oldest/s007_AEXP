@@ -1,4 +1,4 @@
-NON-TERMINALS: [AEXP, ID, MULT, TERM]
+NON-TERMINALS: [AEXP, ID, LENOP, MULT, SEOP, TERM]
 TERMINALS:     [(, ), *, +, -, /, _num, _rc]
 START SYMBOL:  AEXP
      RULES:
@@ -14,6 +14,8 @@ START SYMBOL:  AEXP
 (9) MULT -> ID
 (10) MULT -> _num
 (11) MULT -> _rc
+(12) MULT -> LENOP
+(13) MULT -> SEOP
 Грамматика операторного предшествования
 Таблица переноса и свертки
                   |    €    

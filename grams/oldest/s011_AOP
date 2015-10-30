@@ -1,4 +1,4 @@
-NON-TERMINALS: [AEXP, ALEXP, AOP, C, ID, LEXP]
+NON-TERMINALS: [AEXP, ALEXP, AOP, C, CONOP, ID, LEXP, REPOP, SUBOP]
 TERMINALS:     [_eq]
 START SYMBOL:  AOP
      RULES:
@@ -6,6 +6,9 @@ START SYMBOL:  AOP
 (1) ALEXP -> C
 (2) ALEXP -> AEXP
 (3) ALEXP -> LEXP
+(4) ALEXP -> CONOP
+(5) ALEXP -> REPOP
+(6) ALEXP -> SUBOP
 Грамматика операторного предшествования
 Таблица переноса и свертки
                   |   €   

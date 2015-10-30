@@ -157,6 +157,8 @@ int findTokenInGram(int gi, token_t t) {
                 break; */
             case 7:
                 if (t == _ID) return 6;
+				else if (t == _LEN) return 18;
+                else if (t == _SRCH) return 21;
                 break;
             case 8:
                 // if (t != _STR && tokens[1].id == _REL) return 7;
@@ -177,11 +179,11 @@ int findTokenInGram(int gi, token_t t) {
                 else if (t == _BEGIN) return 15;
                 else if (t == _IF) return 16;
                 else if (t == _WHILE) return 17;
-                else if (t == _LEN) return 18;
-                else if (t == _CONC) return 19;
-                else if (t == _REPL) return 20;
-                else if (t == _SRCH) return 21;
-                else if (t == _SUBS) return 22;
+                //else if (t == _LEN) return 18;
+                //else if (t == _CONC) return 19;
+                //else if (t == _REPL) return 20;
+                //else if (t == _SRCH) return 21;
+                //else if (t == _SUBS) return 22;
                 else if (t == _NEWW) return 24;
                 break;
             case 11:
@@ -190,7 +192,10 @@ int findTokenInGram(int gi, token_t t) {
                 else if (isAtB(_NOT, _SEMCOL) || isAtB(_OR, _SEMCOL) || isAtB(_AND, _SEMCOL) ||
                          isAtB(_REL, _SEMCOL)) return 8;
                 else if (t == _CC || t == _TRUE || t == _FALSE || t == _STR) return 9;
-                else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) return 7;
+                else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC || t == _LEN || t == _SRCH) return 7;
+                else if (t == _CONC) return 19;
+                else if (t == _REPL) return 20;
+                else if (t == _SUBS) return 22;
                 break;
             case 12:
                 if (t == _ID) return 6;
@@ -642,7 +647,7 @@ void syntacticAnalysis() {
         pGramStack();
         pCommonStack();
         pTokens();
-        pOutFoldRules();
+        //pOutFoldRules();
         
         ct = tokens[0].id;
         cg = gramsStack.top();

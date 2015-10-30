@@ -461,12 +461,12 @@ void initGramm6() {
 }
 void initGramm7() {
     Gramm g(7);
-    token_t nonTerms[] = {AEXP, ID, MULT, TERM};
+    token_t nonTerms[] = {AEXP, ID, LENOP, MULT, SEOP, TERM};
     token_t Terms[] = {_OBRACK, _CBRACK, _MULT, _PLUS, _MINUS, _DIV, _NUM, _RC};
-    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 4);
+    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
     g.terms.insert(Terms, Terms + 8);
     g.startNonTerm = AEXP;
-    g.rulesCount = 12;
+    g.rulesCount = 14;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {AEXP, TERM};
     token_t r1t[] = {AEXP, _PLUS, TERM};
@@ -480,6 +480,8 @@ void initGramm7() {
     token_t r9t[] = {MULT, ID};
     token_t r10t[] = {MULT, _NUM};
     token_t r11t[] = {MULT, _RC};
+	token_t r12t[] = {MULT, LENOP};
+	token_t r13t[] = {MULT, SEOP};
     
     std::vector<token_t> r0 (r0t, r0t + sizeof(r0t) / sizeof(token_t));
     std::vector<token_t> r1 (r1t, r1t + sizeof(r1t) / sizeof(token_t));
@@ -493,6 +495,8 @@ void initGramm7() {
     std::vector<token_t> r9 (r9t, r9t + sizeof(r9t) / sizeof(token_t));
     std::vector<token_t> r10 (r10t, r10t + sizeof(r10t) / sizeof(token_t));
     std::vector<token_t> r11 (r11t, r11t + sizeof(r11t) / sizeof(token_t));
+    std::vector<token_t> r12 (r12t, r12t + sizeof(r12t) / sizeof(token_t));
+    std::vector<token_t> r13 (r13t, r13t + sizeof(r13t) / sizeof(token_t));
     
     g.rules[0] = r0;
     g.rules[1] = r1;
@@ -506,6 +510,8 @@ void initGramm7() {
     g.rules[9] = r9;
     g.rules[10] = r10;
     g.rules[11] = r11;
+    g.rules[12] = r12;
+    g.rules[13] = r13;
     
     { struct FoldRule fr; fr.inStack.push_back(_OBRACK); fr.inStack.push_back(_PLUS); fr.inStack.push_back(AEXP); fr.ruleNum = 1; g.foldRules.push_back(fr); }
     { struct FoldRule fr; fr.inStack.push_back(_HASH); fr.inStack.push_back(_PLUS); fr.inStack.push_back(AEXP); fr.ruleNum = 1; g.foldRules.push_back(fr); }
@@ -976,12 +982,12 @@ void initGramm9() {
 }
 void initGramm10() {
     Gramm g(10);
-    token_t nonTerms[] = {AOP, CONOP, COP, FOROP, GOP, ID, IFAOP, IFOP, NEWOP, OP, REPOP, ROP, SEOP, SUBOP, UMOP, WOP, LENOP};
+    token_t nonTerms[] = {AOP, COP, FOROP, GOP, ID, IFAOP, IFOP, NEWOP, OP, ROP, UMOP, WOP};
     token_t Terms[] = {_COLUM};
-    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 17);
+    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 12);
     g.terms.insert(Terms, Terms + 1);
     g.startNonTerm = OP;
-    g.rulesCount = 16;
+    g.rulesCount = 11;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {OP, ID, _COLUM, UMOP};
     token_t r1t[] = {OP, UMOP};
@@ -992,13 +998,8 @@ void initGramm10() {
     token_t r6t[] = {UMOP, COP};
     token_t r7t[] = {UMOP, IFOP};
     token_t r8t[] = {UMOP, FOROP};
-    token_t r9t[] = {UMOP, CONOP};
-    token_t r10t[] = {UMOP, REPOP};
-    token_t r11t[] = {UMOP, SEOP};
-    token_t r12t[] = {UMOP, SUBOP};
-    token_t r13t[] = {UMOP, NEWOP};
-    token_t r14t[] = {UMOP, IFAOP};
-    token_t r15t[] = {UMOP, LENOP};
+    token_t r9t[] = {UMOP, NEWOP};
+    token_t r10t[] = {UMOP, IFAOP};
     
     std::vector<token_t> r0 (r0t, r0t + sizeof(r0t) / sizeof(token_t));
     std::vector<token_t> r1 (r1t, r1t + sizeof(r1t) / sizeof(token_t));
@@ -1011,11 +1012,6 @@ void initGramm10() {
     std::vector<token_t> r8 (r8t, r8t + sizeof(r8t) / sizeof(token_t));
     std::vector<token_t> r9 (r9t, r9t + sizeof(r9t) / sizeof(token_t));
     std::vector<token_t> r10 (r10t, r10t + sizeof(r10t) / sizeof(token_t));
-    std::vector<token_t> r11 (r11t, r11t + sizeof(r11t) / sizeof(token_t));
-    std::vector<token_t> r12 (r12t, r12t + sizeof(r12t) / sizeof(token_t));
-    std::vector<token_t> r13 (r13t, r13t + sizeof(r13t) / sizeof(token_t));
-    std::vector<token_t> r14 (r14t, r14t + sizeof(r14t) / sizeof(token_t));
-    std::vector<token_t> r15 (r15t, r15t + sizeof(r15t) / sizeof(token_t));
     
     g.rules[0] = r0;
     g.rules[1] = r1;
@@ -1028,11 +1024,6 @@ void initGramm10() {
     g.rules[8] = r8;
     g.rules[9] = r9;
     g.rules[10] = r10;
-    g.rules[11] = r11;
-    g.rules[12] = r12;
-    g.rules[13] = r13;
-    g.rules[14] = r14;
-    g.rules[15] = r15;
     
     { struct FoldRule fr; fr.inStack.push_back(_HASH); fr.inStack.push_back(OP); fr.inStack.push_back(_COLUM); fr.inStack.push_back(OP); fr.ruleNum = 0; g.foldRules.push_back(fr); }
     
@@ -1044,32 +1035,41 @@ void initGramm10() {
 
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(OP); tr.input = _COLUM; tr.rule = _S; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(OP); tr.input = _EPS; tr.rule = _A; g.transRules.push_back(tr); }
-    
+	
     grams.push_back(g);
 }
 void initGramm11() {
     Gramm g(11);
-    token_t nonTerms[] = {AEXP, ALEXP, AOP, C, ID, LEXP};
+    token_t nonTerms[] = {AEXP, ALEXP, AOP, C, CONOP, ID, LEXP, REPOP, SUBOP};
     token_t Terms[] = {_EQ};
-    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 6);
+    g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 9);
     g.terms.insert(Terms, Terms + 1);
     g.startNonTerm = AOP;
-    g.rulesCount = 4;
+    g.rulesCount = 7;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {AOP, ID, _EQ, ALEXP};
     token_t r1t[] = {ALEXP, C};
     token_t r2t[] = {ALEXP, AEXP};
     token_t r3t[] = {ALEXP, LEXP};
+    token_t r4t[] = {ALEXP, CONOP};
+    token_t r5t[] = {ALEXP, REPOP};
+    token_t r6t[] = {ALEXP, SUBOP};
     
     std::vector<token_t> r0 (r0t, r0t + sizeof(r0t) / sizeof(token_t));
     std::vector<token_t> r1 (r1t, r1t + sizeof(r1t) / sizeof(token_t));
     std::vector<token_t> r2 (r2t, r2t + sizeof(r2t) / sizeof(token_t));
     std::vector<token_t> r3 (r3t, r3t + sizeof(r3t) / sizeof(token_t));
+    std::vector<token_t> r4 (r4t, r4t + sizeof(r4t) / sizeof(token_t));
+    std::vector<token_t> r5 (r5t, r5t + sizeof(r5t) / sizeof(token_t));
+    std::vector<token_t> r6 (r6t, r6t + sizeof(r6t) / sizeof(token_t));
     
     g.rules[0] = r0;
     g.rules[1] = r1;
     g.rules[2] = r2;
     g.rules[3] = r3;
+    g.rules[4] = r4;
+    g.rules[5] = r5;
+    g.rules[6] = r6;
     
     { struct FoldRule fr; fr.inStack.push_back(_HASH); fr.inStack.push_back(AOP); fr.inStack.push_back(_EQ); fr.inStack.push_back(AOP); fr.ruleNum = 0; g.foldRules.push_back(fr); }
     
