@@ -99,6 +99,56 @@ int findTokenInGram(int gi, token_t t) {
                     if (s2.id == _HASH) return -1;
                 }
                 break;
+            case 18:
+                if (t == _CBRACK && commonStack.top().id == _CBRACK) return -1;
+                else if (t == _CBRACK && commonStack.top().id == LENOP) {
+                    Symbol s1 = commonStack.top();
+                    commonStack.pop();
+                    Symbol s2 = commonStack.top();
+                    commonStack.push(s1);
+                    if (s2.id == _HASH) return -1;
+                }
+                break;
+            case 19:
+                if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == _CBRACK) return -1;
+                else if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == CONOP) {
+                    Symbol s1 = commonStack.top();
+                    commonStack.pop();
+                    Symbol s2 = commonStack.top();
+                    commonStack.push(s1);
+                    if (s2.id == _HASH) return -1;
+                }
+                break;
+            case 20:
+                if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == _CBRACK) return -1;
+                else if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == REPOP) {
+                    Symbol s1 = commonStack.top();
+                    commonStack.pop();
+                    Symbol s2 = commonStack.top();
+                    commonStack.push(s1);
+                    if (s2.id == _HASH) return -1;
+                }
+                break;
+            case 21:
+                if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == _CBRACK) return -1;
+                else if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == SEOP) {
+                    Symbol s1 = commonStack.top();
+                    commonStack.pop();
+                    Symbol s2 = commonStack.top();
+                    commonStack.push(s1);
+                    if (s2.id == _HASH) return -1;
+                }
+                break;
+            case 22:
+                if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == _CBRACK) return -1;
+                else if ((t == _CBRACK || t == _COMMA) && commonStack.top().id == SUBOP) {
+                    Symbol s1 = commonStack.top();
+                    commonStack.pop();
+                    Symbol s2 = commonStack.top();
+                    commonStack.push(s1);
+                    if (s2.id == _HASH) return -1;
+                }
+                break;
             case 23:
                 if (t == _SEMCOL && (nextT == _BEGIN)) return -1;
                 break;
@@ -165,7 +215,7 @@ int findTokenInGram(int gi, token_t t) {
                 break;
             case 8:
                 // if (t != _STR && tokens[1].id == _REL) return 7;
-                if ((t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) && isAtB(_REL, _SEMCOL) &&
+                if ((t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC || t == _LEN || t == _SRCH) && isAtB(_REL, _SEMCOL) &&
                     !(isAtB(_AND, _REL) || isAtB(_OR, _REL))) return 7;
                 else if (t != _STR && commonStack.top().id == _REL) return 7;
                 else if (t == _ID) return 6;
@@ -207,7 +257,10 @@ int findTokenInGram(int gi, token_t t) {
                 // TODO ////////////////////////////////////////////////
                 if (isAtB(_NOT, _SEMCOL) || isAtB(_OR, _SEMCOL) || isAtB(_AND, _SEMCOL) ||
                          isAtB(_REL, _SEMCOL)) return 8;
-                else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC) return 7;
+                else if (t == _PLUS || t == _MINUS || t == _OBRACK || t == _ID || t == _NUM || t == _RC || t == _LEN || t == _SRCH) return 7;
+                else if (t == _CONC) return 19;
+                else if (t == _REPL) return 20;
+                else if (t == _SUBS) return 22;
                 break;
             case 14:
                 if (t == _ID) return 6;
