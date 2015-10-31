@@ -527,6 +527,7 @@ void lexicalAnalysis (std::ifstream &in) {
                          c == ';' || c == ',' || c == '.' || c == '(' ||
                          c == ')') { savePunct(c); s = S_START; }
                 else if (c == EOF) { s = S_START; }
+                else if (c == '{') { s = S_COMMENT; }
                 else { unrecErr(c); } break;
                 
             case S_150:
@@ -1136,7 +1137,8 @@ void lexicalAnalysis (std::ifstream &in) {
             case S_89:
                 if (isNum(c) || isLetter(c)) { s = S_160; }
                 else { saveVar(); in.putback(c); s = S_START; } break;
-                
+            case S_COMMENT:
+                if (c == '}') { s = S_START; } break;
             default:
                 unrecErr(c);
                 break;
