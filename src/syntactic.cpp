@@ -263,7 +263,7 @@ int findTokenInGram(int gi, token_t t) {
                 else if (t == _BOOL) return 5;
                 else if (t == _CHAR) return 5;
                 else if (t == _STRING) return 5;
-                else if (t == _BEGIN) return 15;
+                else if (t == _BEGIN) {forFuncAndOper = true; return 15;}
                 break;
             default:
                 break;
