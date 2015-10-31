@@ -19,6 +19,8 @@ public:
     int firstElemInCS;
 };
 
+// Необходимая фигня, чтобы в функциях и перегрузках не влезать во второй блок begin .. end
+bool forFuncAndOper;
 
 // Common stack
 std::stack<Symbol> commonStack;
@@ -60,22 +62,23 @@ int findTokenInGram(int gi, token_t t) {
         switch(gi) {
             case 1:
                 // Может надо проверять, что t == _SEMCOL ?
-                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER)) return -1;
                 break;
             case 2:
-                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER)) return -1;
                 break;
             case 3:
-                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC)) return -1;
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER)) return -1;
                 break;
             case 4:
-                if (t == _SEMCOL && commonStack.top().id == FUNCS) {
-                    Symbol s1 = commonStack.top();
-                    commonStack.pop();
-                    Symbol s2 = commonStack.top();
-                    commonStack.push(s1);
-                    if (s2.id == _SEMCOL || s2.id == _HASH) return -1;
-                }
+				if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER) && forFuncAndOper) return -1;
+				// if (t == _SEMCOL && commonStack.top().id == FUNCS) {
+                    // Symbol s1 = commonStack.top();
+                    // commonStack.pop();
+                    // Symbol s2 = commonStack.top();
+                    // commonStack.push(s1);
+                    // if (s2.id == _SEMCOL || s2.id == _HASH) return -1;
+                // }
                 break;
             case 7:
                 if (t == _CBRACK && commonStack.top().id == AEXP) {
@@ -140,7 +143,7 @@ int findTokenInGram(int gi, token_t t) {
                 break;
             case 4:
                 if (t == _OPER) return 26;
-                else if (t == _BEGIN) return 15;
+                else if (t == _BEGIN) {forFuncAndOper = true; return 15;}
                 else if (t == _VAR) return 1;
                 else if (t == _ID) return 6;
                 else if (t == _INT) return 5;
@@ -243,8 +246,8 @@ int findTokenInGram(int gi, token_t t) {
                 if (t == _CONST) return 2;
                 else if (t == _VAR) return 1;
                 else if (t == _LABEL) return 3;
-                else if (t == _FUNC) return 4;
-                else if (t == _OPER) return 4;
+                else if (t == _FUNC) {forFuncAndOper = false; return 4;}
+                else if (t == _OPER) {forFuncAndOper = false; return 4;}
                 break;
             case 24:
                 if (t == _ID) return 6;
@@ -606,8 +609,8 @@ void pCommonStack() {
     std::cout << "]\n";
 }
 
-void syntacticAnalysis() {
-    // Epsilon Symbol
+void syntacticAnalysis() {	
+	// Epsilon Symbol
     Symbol epsSymbol (_EPS, "$", 1);
     tokens.push_back(epsSymbol);
     //Hash Symbol
@@ -647,7 +650,7 @@ void syntacticAnalysis() {
         pGramStack();
         pCommonStack();
         pTokens();
-        //pOutFoldRules();
+        pOutFoldRules();
         
         ct = tokens[0].id;
         cg = gramsStack.top();

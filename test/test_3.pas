@@ -3,8 +3,8 @@ var a,b:real;
 begin
     write('Hello');
     read(ol);
-    length('Tra-ra-ra');
-    concat('abc', 'def');
+    a := 9*length('Tra-ra-ra') - ds;
+    str := concat('abc', 'def');
 
     while (b) do write('ldldlddld');
 end.
