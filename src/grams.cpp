@@ -43,7 +43,6 @@ Gramm::Gramm(int id) {
 }
 
 Gramm::~Gramm() {
-    // if (rules) delete rules;
     rulesCount = 0;
 }
 
@@ -291,7 +290,7 @@ void initGramm3() {
 }
 void initGramm4() {
     Gramm g(4);
-    token_t nonTerms[] = {COP, FUNCS, FUNOP, HFUN, ID, OPOP, TYPE, VARS};
+    token_t nonTerms[] = {COP, FUNCS, FUNOP, HFUN, ID, OPOP, TYPE, CLV};
     token_t Terms[] = {_COLUM, _SEMCOL, _FUNC};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 8);
     g.terms.insert(Terms, Terms + 3);
@@ -301,7 +300,7 @@ void initGramm4() {
     token_t r0t[] = {FUNCS, FUNOP};
     token_t r1t[] = {FUNCS, OPOP};
     token_t r2t[] = {FUNOP, HFUN, _SEMCOL, COP};
-    token_t r3t[] = {FUNOP, HFUN, _SEMCOL, VARS, _SEMCOL, COP};
+    token_t r3t[] = {FUNOP, HFUN, _SEMCOL, CLV, _SEMCOL, COP};
     token_t r4t[] = {HFUN, _FUNC, ID, _COLUM, TYPE};
     
     std::vector<token_t> r0 (r0t, r0t + sizeof(r0t) / sizeof(token_t));

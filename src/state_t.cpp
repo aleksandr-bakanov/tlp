@@ -1,3 +1,5 @@
+//#define DEBUG 1
+
 // States
 typedef enum {
     S_START, S_ERROR,

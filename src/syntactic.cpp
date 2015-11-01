@@ -20,6 +20,30 @@ public:
     int firstElemInCS;
 };
 
+// Придется создать здесь класс дерева. В очередной раз.
+class Node {
+public:
+    Node(Symbol t, Node* p) : data(t), parent(p) {};
+    ~Node();
+    
+    Symbol data;
+    Node* parent;
+    std::vector<Node*> children;
+};
+
+Node::~Node() {
+    while (children.size() > 0) {
+        delete children[0];
+        children[0] = NULL;
+        children.erase(children.begin());
+    }
+}
+
+//======================================================================
+//
+// G L O B A L   V A R I A B L E S
+//
+//======================================================================
 // Необходимая фигня, чтобы в функциях и перегрузках не влезать во второй блок begin .. end
 bool forFuncAndOper;
 
@@ -30,7 +54,12 @@ std::stack<CurGram> gramsStack;
 // Output stack
 
 // Vector for table of resource
-std::vector<TableOfResource> tables;
+std::vector<TableOfResource*> resourceTables;
+
+std::stack<TableOfResource*> resourceTableStack;
+TableOfResource* currentResourceTable = NULL;
+Node* newTableNode = NULL;
+//======================================================================
 
 bool isTokenInGram(int gi, token_t t) {
     std::set<token_t>::iterator it = grams[gi].terms.find(t);
@@ -53,7 +82,9 @@ bool isAtB(token_t a, token_t b) {
 }
 
 int findTokenInGram(int gi, token_t t) {
-//    std::cout << "findTokenInGram(gi=" << gi << ", t="; pT(t); std::cout  << ")" << std::endl;
+#ifdef DEBUG
+    std::cout << "findTokenInGram(gi=" << gi << ", t="; pT(t); std::cout  << ")" << std::endl;
+#endif
     Gramm& g = grams[gi];
     // Если текущий символ есть в текущей грамматике, но возможно он принадлежит другой грамматике
     if (isTokenInGram(gi, t)) {
@@ -194,7 +225,13 @@ int findTokenInGram(int gi, token_t t) {
             case 4:
                 if (t == _OPER) return 26;
                 else if (t == _BEGIN) {forFuncAndOper = true; return 15;}
-                else if (t == _VAR) return 1;
+
+                else if (t == _CONST) return 23;
+                else if (t == _VAR) return 23;
+                else if (t == _LABEL) return 23;
+                else if (t == _FUNC) return 23;
+                else if (t == _OPER) return 23;
+
                 else if (t == _ID) return 6;
                 else if (t == _INT) return 5;
                 else if (t == _REAL) return 5;
@@ -210,7 +247,7 @@ int findTokenInGram(int gi, token_t t) {
                 break; */
             case 7:
                 if (t == _ID) return 6;
-				else if (t == _LEN) return 18;
+                else if (t == _LEN) return 18;
                 else if (t == _SRCH) return 21;
                 break;
             case 8:
@@ -237,7 +274,7 @@ int findTokenInGram(int gi, token_t t) {
                 //else if (t == _REPL) return 20;
                 //else if (t == _SRCH) return 21;
                 //else if (t == _SUBS) return 22;
-                else if (t == _NEWW) return 24;
+                //else if (t == _NEWW) return 24;
                 break;
             case 11:
                 // TODO ////////////////////////////////////////////////
@@ -326,25 +363,6 @@ int findTokenInGram(int gi, token_t t) {
     }
 }
 
-// Придется создать здесь класс дерева. В очередной раз.
-class Node {
-public:
-    Node(Symbol t, Node* p) : data(t), parent(p) {};
-    ~Node();
-    
-    Symbol data;
-    Node* parent;
-    std::vector<Node*> children;
-};
-
-Node::~Node() {
-    while (children.size() > 0) {
-        delete children[0];
-        children[0] = NULL;
-        children.erase(children.begin());
-    }
-}
-
 // Функция, определяющая по токену, является ли он терминалом или нет.
 bool isTokenTerm (token_t t) {
     return (t == _ID || t == _NUM || t == _STR || t == _PROG || t == _CONST || t == _INT || t == _REAL || t == _STRING || t == _GOTO || t == _WHILE || t == _IF || t == _THEN || t == _ELSE || t == _READ || t == _WRITE || t == _TRUE || t == _FALSE || t == _BOOL || t == _DO || t == _CHAR || t == _BEGIN || t == _END || t == _VAR || t == _LABEL || t == _CONC || t == _LEN || t == _REPL || t == _SUBS || t == _SRCH || t == _FUNC || t == _OPER || t == _NEWW || t == _L || t == _N || t == _PLUS || t == _MINUS || t == _MULT || t == _DIV || t == _NOT || t == _AND || t == _OR || t == _REL || t == _EQ || t == _DOT || t == _OBRACK || t == _CBRACK || t == _SEMCOL || t == _COLUM || t == _COMMA || t == _RC || t == _CC || t == _EPS);
@@ -370,8 +388,232 @@ Node* findRightestNonTerm(Node* n) {
     }
 }
 
+// Функция вытаскивает из синтаксического дерева все указатели на RVAR.
+void getAllRvars(Node* n, std::vector<Node*>& res) {
+    if (n->data.id == RVAR) {
+        res.push_back(n);
+    }
+    // Если есть дети, смотрим их слева-направо
+    if (n->children.size() > 0) {
+        for (int i = 0; i < n->children.size(); i++) {
+            getAllRvars(n->children[i], res);
+        }
+    }
+}
+
+// Функция вытаскивает из синтаксического дерева все указатели на ID.
+void getAllIds(Node* n, std::vector<Node*>& res) {
+    if (n->data.id == ID) {
+        res.push_back(n);
+    }
+    // Если есть дети, смотрим их слева-направо
+    if (n->children.size() > 0) {
+        for (int i = 0; i < n->children.size(); i++) {
+            getAllIds(n->children[i], res);
+        }
+    }
+}
+
+// Функция вытаскивает из синтаксического дерева все указатели на ID.
+void getAllUnderscoredIds(Node* n, std::vector<Node*>& res) {
+    if (n->data.id == _ID) {
+        res.push_back(n);
+    }
+    // Если есть дети, смотрим их слева-направо
+    if (n->children.size() > 0) {
+        for (int i = 0; i < n->children.size(); i++) {
+            getAllUnderscoredIds(n->children[i], res);
+        }
+    }
+}
+
+// Функции передают указатель на RVAR узел, она ищет среди его
+// потомков узлы с типом _ID и TYPE. Заполняя по ходу таблицу ресурсов.
+void collectVars(Node* n, std::vector<Resource>& resources, bool isRoot) {
+    if (n->data.id == _ID) {
+        Resource r (n->data.value(), R_VAR, V_NULL, "");
+        resources.push_back(r);
+    }
+    else if (n->data.id == TYPE) {
+        value_t type = V_NULL;
+        switch (n->children[0]->data.id) {
+            case _INT: type = V_INTEGER; break;
+            case _REAL: type = V_REAL; break;
+            case _BOOL: type = V_BOOLEAN; break;
+            case _STRING: type = V_STRING; break;
+            default: type = V_NULL; break;
+        }
+        for (int i = 0; i < resources.size(); i++) {
+            resources[i].type = type;
+        }
+        return;
+    }
+    else if (n->data.id == RVAR && !isRoot) {
+        // Get the fuck out here!
+        return;
+    }
+    // Если есть дети, смотрим их справа-налево
+    if (n->children.size() > 0) {
+        for (int i = 0; i < n->children.size(); i++) {
+            collectVars(n->children[i], resources, false);
+        }
+    }
+}
+
+void collectConst(Node* n, std::vector<Resource>& resources) {
+    Node* nameChild = n->children[0];
+    Node* valueChild = n->parent->children[2]->children[0];
+    value_t type = V_NULL;
+    switch (valueChild->data.id) {
+        case _NUM: type = V_INTEGER; break;
+        case _RC: type = V_REAL; break;
+        case _TRUE:
+        case _FALSE: type = V_BOOLEAN; break;
+        case _STR: type = V_STRING; break;
+        default: type = V_NULL; break;
+    }
+    Resource r (nameChild->data.value(), R_CONST, type, valueChild->data.value());
+    resources.push_back(r);
+}
+
+void collectLabel(Node* n, std::vector<Resource>& resources) {
+    Resource r (n->data.value(), R_LABEL, V_NULL, "");
+    resources.push_back(r);
+}
+
+void giveMeVars(Node* n) {
+    // Собираем все rvars из детей данного узла.
+    std::vector<Node*> rvars;
+    getAllRvars(n, rvars);
+    // Собираем vars в ресурсы
+    std::vector<Resource> vars;
+    for (int i = 0; i < rvars.size(); i++) {
+        collectVars(rvars[i], vars, true);
+    }
+    // Сохраняем ресурсы в текущую таблицу.
+    for (int i = 0; i < vars.size(); i++) {
+        std::pair<std::map<std::string, Resource>::iterator, bool>
+            ret = currentResourceTable->table.insert(
+                std::pair<std::string, Resource>(
+                    vars[i].name, vars[i]));
+        // Если ресурс с таким именем уже есть в таблице,
+        // то сообщаем об ошибке и уходим.
+        if (ret.second == false) {
+            printf("Duplicate identifier: %s\n", vars[i].name.c_str());
+            exit(1);
+        }
+    }
+}
+
+void giveMeConsts(Node* n) {
+    // Собираем все rvars из детей данного узла.
+    std::vector<Node*> ids;
+    getAllIds(n, ids);
+    // Собираем consts в ресурсы
+    std::vector<Resource> consts;
+    for (int i = 0; i < ids.size(); i++) {
+        collectConst(ids[i], consts);
+    }
+    // Сохраняем ресурсы в текущую таблицу.
+    for (int i = 0; i < consts.size(); i++) {
+        std::pair<std::map<std::string, Resource>::iterator, bool>
+            ret = currentResourceTable->table.insert(
+                std::pair<std::string, Resource>(
+                    consts[i].name, consts[i]));
+        // Если ресурс с таким именем уже есть в таблице,
+        // то сообщаем об ошибке и уходим.
+        if (ret.second == false) {
+            printf("Duplicate identifier: %s\n", consts[i].name.c_str());
+            exit(1);
+        }
+    }
+}
+
+void giveMeLabels(Node* n) {
+    // Собираем все rvars из детей данного узла.
+    std::vector<Node*> labelIds;
+    getAllUnderscoredIds(n, labelIds);
+    // Собираем vars в ресурсы
+    std::vector<Resource> labels;
+    for (int i = 0; i < labelIds.size(); i++) {
+        collectLabel(labelIds[i], labels);
+    }
+    // Сохраняем ресурсы в текущую таблицу.
+    for (int i = 0; i < labels.size(); i++) {
+        std::pair<std::map<std::string, Resource>::iterator, bool>
+            ret = currentResourceTable->table.insert(
+                std::pair<std::string, Resource>(
+                    labels[i].name, labels[i]));
+        // Если ресурс с таким именем уже есть в таблице,
+        // то сообщаем об ошибке и уходим.
+        if (ret.second == false) {
+            printf("Duplicate identifier: %s\n", labels[i].name.c_str());
+            exit(1);
+        }
+    }
+}
+
+// Сбор ресурсов с подконтрольных территорий (всего дерева).
+void collectResources(Node* n) {
+    // Если есть дети, надо проверить нулевого, он может быть
+    // _VAR, _CONST, _LABEL или HFUN.
+    if (n->children.size() > 0) {
+        token_t id = n->children[0]->data.id;
+        if (id == _VAR) {
+            giveMeVars(n);
+            return;
+        }
+        else if (id == _CONST) {
+            giveMeConsts(n);
+            return;
+        }
+        else if (id == _LABEL) {
+            giveMeLabels(n);
+            return;
+        }
+        else if (id == HFUN) {
+            Node* nameChild = n->children[0]->children[1]->children[0];
+            Node* typeChild = n->children[0]->children[3]->children[0];
+            value_t type = V_NULL;
+            switch (typeChild->data.id) {
+                case _INT: type = V_INTEGER; break;
+                case _REAL: type = V_REAL; break;
+                case _BOOL: type = V_BOOLEAN; break;
+                case _STRING: type = V_STRING; break;
+                default: type = V_NULL; break;
+            }
+            Resource r (nameChild->data.value(), R_FUNC, type, "");
+            std::pair<std::map<std::string, Resource>::iterator, bool>
+                ret = currentResourceTable->table.insert(
+                    std::pair<std::string, Resource>(r.name, r));
+            if (ret.second == false) {
+                printf("Duplicate identifier: %s\n", r.name.c_str());
+                exit(1);
+            }
+            // Создаем локальную таблицу ресурсов
+            newTableNode = n;
+            TableOfResource* newTable = new TableOfResource(r.name);
+            resourceTables.push_back(newTable);
+            resourceTableStack.push(newTable);
+            currentResourceTable = newTable;
+        }
+    }
+
+    for (int i = 0; i < n->children.size(); i++) {
+        collectResources(n->children[i]);
+    }
+
+    if (newTableNode == n) {
+        newTableNode = NULL;
+        resourceTableStack.pop();
+        currentResourceTable = resourceTableStack.top();
+    }
+}
+
 int doTransRule(CurGram cg, Symbol s) {
-//    std::cout << "doTransRule(cg.id=" << cg.id << ", Symbol s = " << pTT(s.id) << ")\n";
+#ifdef DEBUG
+    std::cout << "doTransRule(cg.id=" << cg.id << ", Symbol s = " << pTT(s.id) << ")\n";
+#endif
     Gramm& g = grams[cg.id];
     
     // If there are two nonterminals in common stack together.
@@ -417,12 +659,16 @@ int doTransRule(CurGram cg, Symbol s) {
                 
                 if (isEqual) {
                     if (tr.rule == _S) {
-//                        std::cout << ">> _S\n";
+#ifdef DEBUG
+                        std::cout << ">> _S\n";
+#endif
                         tokens.erase(tokens.begin());
                         commonStack.push(s);
                     }
                     else if (tr.rule == _A) {
-//                        std::cout << ">> _A\n";
+#ifdef DEBUG
+                        std::cout << ">> _A\n";
+#endif
                         if (gramsStack.size() == 1) {
                             gramsStack.pop();
                         }
@@ -437,7 +683,9 @@ int doTransRule(CurGram cg, Symbol s) {
                         }
                     }
                     else if (tr.rule == _R) {
-//                        std::cout << ">> _R\n";
+#ifdef DEBUG
+                        std::cout << ">> _R\n";
+#endif
                         bool foldRuleFound = false;
                         for (int i = 0; i < g.foldRules.size(); i++) {
                             FoldRule& fr = g.foldRules[i];
@@ -470,21 +718,24 @@ int doTransRule(CurGram cg, Symbol s) {
                                     OutFoldRule ofr (g.id, fr.ruleNum);
                                     ofr.symbols = dummyVector;
                                     outFoldRules.push_back(ofr);
-//                                    std::cout << ">> Compare common stack and fr.inStack:\n";
-//                                    for (int j = 0; j < fr.inStack.size(); j++) {
-//                                        std::cout << "  " << j << ") " << pTT(dummyVector[j].id) <<
-//                                            "\t" << pTT(fr.inStack[j]) << std::endl;
-//                                    }
-//                                    std::cout << ">> Add OutFoldRule: g.id = " << g.id << ", rNum = " <<
-//                                        fr.ruleNum << std::endl;
-                                    
+#ifdef DEBUG
+                                    std::cout << ">> Compare common stack and fr.inStack:\n";
+                                    for (int j = 0; j < fr.inStack.size(); j++) {
+                                        std::cout << "  " << j << ") " << pTT(dummyVector[j].id) <<
+                                            "\t" << pTT(fr.inStack[j]) << std::endl;
+                                    }
+                                    std::cout << ">> Add OutFoldRule: g.id = " << g.id << ", rNum = " <<
+                                        fr.ruleNum << std::endl;
+#endif
                                     break;
                                 }
                             }
                         }
                         // Если не найдены правила свертки
                         if (!foldRuleFound) {
-//                            std::cout << "    foldRuleFound IS FALSE !!!\n";
+#ifdef DEBUG
+                            std::cout << "    foldRuleFound IS FALSE !!!\n";
+#endif
                             return 2;
                         }
                     }
@@ -518,27 +769,14 @@ void printDash(int count) {
 }
 
 void printPerp() {
-    //putchar(0xC3);
-    //putwchar(0x251C);
-    //char block[] = { 0xe2, 0x94, 0x9C, '\0' };
-    //printf("%s", block);
     printf("├");
 }
 
 void printPipe() {
-    //putchar(0xB3);
-    //putwchar(0x2502);
-    //char block[] = { 0xe2, 0x94, 0x82, '\0' };
-    //printf("%s", block);
     printf("│");
 }
 
 void printCurv() {
-    //putchar(0xC0);
-    //putwchar(0x2570);
-    //char block[] = { 0xe2, 0x95, 0xBF, '\0' };
-    //printf("%s", block);
-    //printf("?");
     printf("└");
 }
 
@@ -597,13 +835,13 @@ void treeToString(Node* root) {
     return showNode(root, false);
 }
 
-void pTree() {
+void pTree(Node* &root) {
     // Print in tree view
     // Create tree
     // При построении дерева по правилам свертки, каждое очередное правило разворачивает
     // самый правый нетерминал в дереве.
     Symbol tmp_s (PROG, pTT(PROG).c_str(), isTokenTerm(PROG));
-    Node* root = new Node(tmp_s, NULL);
+    root = new Node(tmp_s, NULL);
     // Обходим правила свертки в обратном порядке
     for (int i = outFoldRules.size() - 1; i >= 0; i--) {
         // Берем правило свертки
@@ -619,7 +857,7 @@ void pTree() {
             // Раскрываем этот нетерминал, добавляя ему детишек
             for (int j = 1; j < r.size(); j++) {
                 Symbol s (r[j], pTT(r[j]).c_str(), isTokenTerm(r[j]));
-                if (r[j] == _ID || r[j] == _NUM || r[j] == _RC || r[j] == _REL) {
+                if (r[j] == _ID || r[j] == _NUM || r[j] == _RC || r[j] == _REL || r[j] == _STR) {
                     s.str = ofr.symbols[j].str;
                 }
                 Node* ch = new Node(s, n);
@@ -680,41 +918,26 @@ void syntacticAnalysis() {
     token_t ct;
     // 
     int ing;
-    
-    
+
     pTokens();
-    
-    
+
     // Start from G0
     gramsStack.push(cg);
     // Gramm& g = grams[cg.id];
     // Put hash in stack (CS)
     commonStack.push(hashSymbol);
-    
-    // Start tables
-    TableOfResource main(std::string(""), 0);
-    tables.push_back(main);
-    
-    
-    //main.table.insert ( std::pair<std::string, Resource>("asd", Resource("asd", R_VAR, V_INTEGER, "12")));
-    //main.print();
-    
-    
-    // int ing = findTokenInGramWide(cg.id, ct);
-    // int ing = findTokenInGram(cg.id, ct);
-    // cg = gramsStack.top();
-    
-    // doTransRule(cg, tokens[0]);
-    
+
     int i = 25;
     while (gramsStack.size() > 0 /* && i > 0 */) {
-        i --;
-    
+        i--;
+
         // Print info
-//        pGramStack();
-//        pCommonStack();
-//        pTokens();
-//        pOutFoldRules();
+#ifdef DEBUG
+        pGramStack();
+        pCommonStack();
+        pTokens();
+        pOutFoldRules();
+#endif
         
         ct = tokens[0].id;
         cg = gramsStack.top();
@@ -738,7 +961,7 @@ void syntacticAnalysis() {
         }
         
     }
-    
+
     if (success) {
         std::cout << "Sentence analysis is complete successfuly.\n";
         //pGramStack();
@@ -746,8 +969,22 @@ void syntacticAnalysis() {
         //pTokens();
 
         pOutFoldRules();
+
+        Node* root = NULL;
+        pTree(root);
         
-        pTree();
+        TableOfResource* firstResourceTable = new TableOfResource();
+        resourceTables.push_back(firstResourceTable);
+        resourceTableStack.push(firstResourceTable);
+        currentResourceTable = firstResourceTable;
+        
+        collectResources(root);
+        
+        printf("Resources tables: \n");
+        for (int i = 0; i < resourceTables.size(); i++) {
+            std::cout << "Table <" << resourceTables[i]->name << ">:" << std::endl;
+            resourceTables[i]->print();
+        }
     }
     else {
         std::cout << "Sentence analysis is NOT complete successfuly.\n";
