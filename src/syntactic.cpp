@@ -1,3 +1,4 @@
+
 class OutFoldRule {
 public:
     OutFoldRule(int g, int r) : gNum(g), rNum(r) {};
@@ -28,6 +29,9 @@ std::stack<Symbol> commonStack;
 std::stack<CurGram> gramsStack;
 // Output stack
 
+// Vector for table of resource
+std::vector<TableOfResource> tables;
+
 bool isTokenInGram(int gi, token_t t) {
     std::set<token_t>::iterator it = grams[gi].terms.find(t);
     bool r = (it != grams[gi].terms.end());
@@ -49,14 +53,10 @@ bool isAtB(token_t a, token_t b) {
 }
 
 int findTokenInGram(int gi, token_t t) {
-    std::cout << "findTokenInGram(gi=" << gi << ", t="; pT(t); std::cout  << ")" << std::endl;
+//    std::cout << "findTokenInGram(gi=" << gi << ", t="; pT(t); std::cout  << ")" << std::endl;
     Gramm& g = grams[gi];
-    // std::cout << "1\n";
-    // Если текущий символ есть в текущей грамматике
+    // Если текущий символ есть в текущей грамматике, но возможно он принадлежит другой грамматике
     if (isTokenInGram(gi, t)) {
-        // std::cout << "2\n";
-        //tokensUsedInFindGram.clear();
-        // std::cout << "3\n";
         // Возможно символ все-таки принадлежит не этой грамматике
         token_t nextT = tokens[1].id;
         switch(gi) {
@@ -371,7 +371,7 @@ Node* findRightestNonTerm(Node* n) {
 }
 
 int doTransRule(CurGram cg, Symbol s) {
-    std::cout << "doTransRule(cg.id=" << cg.id << ", Symbol s = " << pTT(s.id) << ")\n";
+//    std::cout << "doTransRule(cg.id=" << cg.id << ", Symbol s = " << pTT(s.id) << ")\n";
     Gramm& g = grams[cg.id];
     
     // If there are two nonterminals in common stack together.
@@ -417,12 +417,12 @@ int doTransRule(CurGram cg, Symbol s) {
                 
                 if (isEqual) {
                     if (tr.rule == _S) {
-                        std::cout << ">> _S\n";
+//                        std::cout << ">> _S\n";
                         tokens.erase(tokens.begin());
                         commonStack.push(s);
                     }
                     else if (tr.rule == _A) {
-                        std::cout << ">> _A\n";
+//                        std::cout << ">> _A\n";
                         if (gramsStack.size() == 1) {
                             gramsStack.pop();
                         }
@@ -437,7 +437,7 @@ int doTransRule(CurGram cg, Symbol s) {
                         }
                     }
                     else if (tr.rule == _R) {
-                        std::cout << ">> _R\n";
+//                        std::cout << ">> _R\n";
                         bool foldRuleFound = false;
                         for (int i = 0; i < g.foldRules.size(); i++) {
                             FoldRule& fr = g.foldRules[i];
@@ -470,13 +470,13 @@ int doTransRule(CurGram cg, Symbol s) {
                                     OutFoldRule ofr (g.id, fr.ruleNum);
                                     ofr.symbols = dummyVector;
                                     outFoldRules.push_back(ofr);
-                                    std::cout << ">> Compare common stack and fr.inStack:\n";
-                                    for (int j = 0; j < fr.inStack.size(); j++) {
-                                        std::cout << "  " << j << ") " << pTT(dummyVector[j].id) <<
-                                            "\t" << pTT(fr.inStack[j]) << std::endl;
-                                    }
-                                    std::cout << ">> Add OutFoldRule: g.id = " << g.id << ", rNum = " <<
-                                        fr.ruleNum << std::endl;
+//                                    std::cout << ">> Compare common stack and fr.inStack:\n";
+//                                    for (int j = 0; j < fr.inStack.size(); j++) {
+//                                        std::cout << "  " << j << ") " << pTT(dummyVector[j].id) <<
+//                                            "\t" << pTT(fr.inStack[j]) << std::endl;
+//                                    }
+//                                    std::cout << ">> Add OutFoldRule: g.id = " << g.id << ", rNum = " <<
+//                                        fr.ruleNum << std::endl;
                                     
                                     break;
                                 }
@@ -484,7 +484,7 @@ int doTransRule(CurGram cg, Symbol s) {
                         }
                         // Если не найдены правила свертки
                         if (!foldRuleFound) {
-                            std::cout << "    foldRuleFound IS FALSE !!!\n";
+//                            std::cout << "    foldRuleFound IS FALSE !!!\n";
                             return 2;
                         }
                     }
@@ -597,13 +597,7 @@ void treeToString(Node* root) {
     return showNode(root, false);
 }
 
-void pOutFoldRules() {
-    std::cout << "Fold Rules: [";
-    for (int i = 0; i < outFoldRules.size(); i++) {
-        std::cout << "(g=" << outFoldRules[i].gNum << ", r=" << outFoldRules[i].rNum << ") ";
-    }
-    std::cout << "]\n";
-    
+void pTree() {
     // Print in tree view
     // Create tree
     // При построении дерева по правилам свертки, каждое очередное правило разворачивает
@@ -638,6 +632,16 @@ void pOutFoldRules() {
     // Теперь напечатаем дерево.
     treeToString(root);
     std::cout << std::endl;
+}
+
+void pOutFoldRules() {
+    std::cout << "Fold Rules: [";
+    for (int i = 0; i < outFoldRules.size(); i++) {
+        std::cout << "(g=" << outFoldRules[i].gNum << ", r=" << outFoldRules[i].rNum << ") ";
+    }
+    std::cout << "]\n";
+    
+    
 }
 
 void pGramStack() {
@@ -687,6 +691,13 @@ void syntacticAnalysis() {
     // Put hash in stack (CS)
     commonStack.push(hashSymbol);
     
+    // Start tables
+    TableOfResource main(std::string(""), 0);
+    tables.push_back(main);
+    
+    
+    //main.table.insert ( std::pair<std::string, Resource>("asd", Resource("asd", R_VAR, V_INTEGER, "12")));
+    //main.print();
     
     
     // int ing = findTokenInGramWide(cg.id, ct);
@@ -700,10 +711,10 @@ void syntacticAnalysis() {
         i --;
     
         // Print info
-        pGramStack();
-        pCommonStack();
-        pTokens();
-        pOutFoldRules();
+//        pGramStack();
+//        pCommonStack();
+//        pTokens();
+//        pOutFoldRules();
         
         ct = tokens[0].id;
         cg = gramsStack.top();
@@ -730,11 +741,13 @@ void syntacticAnalysis() {
     
     if (success) {
         std::cout << "Sentence analysis is complete successfuly.\n";
-        pGramStack();
-        pCommonStack();
-        pTokens();
+        //pGramStack();
+        //pCommonStack();
+        //pTokens();
 
         pOutFoldRules();
+        
+        pTree();
     }
     else {
         std::cout << "Sentence analysis is NOT complete successfuly.\n";

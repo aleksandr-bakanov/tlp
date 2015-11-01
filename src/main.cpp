@@ -9,13 +9,16 @@
 #include <set>
 #include <algorithm>
 #include <wchar.h>
+#include <map>
 
 #include "state_t.cpp"
 #include "token_t.cpp"
 #include "Symbol.cpp"
 #include "lexical.cpp"
 #include "grams.cpp"
+#include "TableOfResource.cpp"
 #include "syntactic.cpp"
+
 
 void printHelp() {
     std::cout << "Usage: main <file_name>\n";
