@@ -1,13 +1,12 @@
-NON-TERMINALS: [COP, FUNCS, FUNOP, HFUN, ID, OPOP, TYPE, VARS]
+NON-TERMINALS: [CLV, COP, FUNCS, FUNOP, HFUN, ID, OPOP, TYPE]
 TERMINALS:     [:, ;, _func]
 START SYMBOL:  FUNCS
      RULES:
 (0) FUNCS -> FUNOP
 (1) FUNCS -> OPOP
 (2) FUNOP -> HFUN ; COP
-(3) FUNOP -> HFUN ; VARS ; COP
-(4) HFUN -> _func ID : TYPE
-Грамматика операторного предшествования
+(3) FUNOP -> HFUN ; CLV ; COP
+(4) HFUN -> _func ID : TYPEГрамматика операторного предшествования
 Таблица переноса и свертки
                               |    €    
 ------------------------------+----------
