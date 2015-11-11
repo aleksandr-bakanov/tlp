@@ -102,14 +102,19 @@ int findTokenInGram(int gi, token_t t) {
                 if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER)) return -1;
                 break;
             case 4:
-				if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER) && forFuncAndOper) return -1;
-				// if (t == _SEMCOL && commonStack.top().id == FUNCS) {
+                if (t == _SEMCOL && (nextT == _BEGIN || nextT == _VAR || nextT == _CONST || nextT == _LABEL || nextT == _FUNC || nextT == _OPER) && forFuncAndOper) return -1;
+                // if (t == _SEMCOL && commonStack.top().id == FUNCS) {
                     // Symbol s1 = commonStack.top();
                     // commonStack.pop();
                     // Symbol s2 = commonStack.top();
                     // commonStack.push(s1);
                     // if (s2.id == _SEMCOL || s2.id == _HASH) return -1;
                 // }
+                break;
+            case 6:
+                if (t == _CBRACK && commonStack.top().id != _OBRACK) {
+                    return -1;
+                }
                 break;
             case 7:
                 if (t == _CBRACK && commonStack.top().id == AEXP) {
@@ -118,6 +123,11 @@ int findTokenInGram(int gi, token_t t) {
                     Symbol s2 = commonStack.top();
                     commonStack.push(s1);
                     if (s2.id == _HASH) return -1;
+                }
+                break;
+            case 13:
+                if (t == _OBRACK && commonStack.top().id == _OBRACK) {
+                    return 7;
                 }
                 break;
             case 15:
@@ -904,8 +914,23 @@ void pCommonStack() {
     std::cout << "]\n";
 }
 
-void syntacticAnalysis() {	
-	// Epsilon Symbol
+void pSyntaxErrorAt(std::vector<Symbol> tokens, int index) {
+    std::cout << "Tokens: [";
+    for (int i = 0; i < tokens.size(); i++) {
+        if (i == index) {
+            std::cout << "      >>>>>>>>>> ";
+            std::cout << tokens[i].str;
+            std::cout << " <<<<<<<<<<        ";
+        }
+        else {
+            std::cout << tokens[i].str << "  ";
+        }
+    }
+    std::cout << "]\n";
+}
+
+void syntacticAnalysis() {
+    // Epsilon Symbol
     Symbol epsSymbol (_EPS, "$", 1);
     tokens.push_back(epsSymbol);
     //Hash Symbol
@@ -918,6 +943,9 @@ void syntacticAnalysis() {
     token_t ct;
     // 
     int ing;
+    
+    // Local copy of tokens from lexical analisator
+    std::vector<Symbol> tokensCopy = tokens;
 
     pTokens();
 
@@ -964,9 +992,6 @@ void syntacticAnalysis() {
 
     if (success) {
         std::cout << "Sentence analysis is complete successfuly.\n";
-        //pGramStack();
-        //pCommonStack();
-        //pTokens();
 
         pOutFoldRules();
 
@@ -987,6 +1012,7 @@ void syntacticAnalysis() {
         }
     }
     else {
-        std::cout << "Sentence analysis is NOT complete successfuly.\n";
+        std::cout << "\n\nSentence analysis is STOPPED at symbol marked by arrows:\n";
+        pSyntaxErrorAt(tokensCopy, tokensCopy.size() - tokens.size());
     }
 }

@@ -433,26 +433,46 @@ void initGramm5() {
 void initGramm6() {
     Gramm g(6);
     token_t nonTerms[] = {ID};
-    token_t Terms[] = {_ID};
+    token_t Terms[] = {_ID, _OBRACK, _CBRACK};
     g.nonTerms.insert(g.nonTerms.begin(), nonTerms, nonTerms + 1);
-    g.terms.insert(Terms, Terms + 1);
+    g.terms.insert(Terms, Terms + 3);
     g.startNonTerm = ID;
-    g.rulesCount = 1;
+    g.rulesCount = 2;
     g.rules = new std::vector<token_t> [g.rulesCount];
     token_t r0t[] = {ID, _ID};
+    token_t r1t[] = {ID, _ID, _OBRACK, _CBRACK};
     
     std::vector<token_t> r0 (r0t, r0t + sizeof(r0t) / sizeof(token_t));
+    std::vector<token_t> r1 (r1t, r1t + sizeof(r1t) / sizeof(token_t));
     
     g.rules[0] = r0;
+    g.rules[1] = r1;
     
     { struct FoldRule fr; fr.inStack.push_back(_HASH); fr.inStack.push_back(_ID); fr.ruleNum = 0; g.foldRules.push_back(fr); }
+    { struct FoldRule fr; fr.inStack.push_back(_HASH); fr.inStack.push_back(_ID); fr.inStack.push_back(_OBRACK); fr.inStack.push_back(_CBRACK); fr.ruleNum = 1; g.foldRules.push_back(fr); }
     
+    { struct TransRule tr; tr.inStack.push_back(_OBRACK); tr.inStack.push_back(_C); tr.input = _OBRACK; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_OBRACK); tr.inStack.push_back(_C); tr.input = _CBRACK; tr.rule = _S; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_OBRACK); tr.inStack.push_back(_C); tr.input = _ID; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_OBRACK); tr.inStack.push_back(_C); tr.input = _EPS; tr.rule = _E; g.transRules.push_back(tr); }
+
+    { struct TransRule tr; tr.inStack.push_back(_CBRACK); tr.inStack.push_back(_C); tr.input = _OBRACK; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_CBRACK); tr.inStack.push_back(_C); tr.input = _CBRACK; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_CBRACK); tr.inStack.push_back(_C); tr.input = _ID; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_CBRACK); tr.inStack.push_back(_C); tr.input = _EPS; tr.rule = _R; g.transRules.push_back(tr); }
+
+    { struct TransRule tr; tr.inStack.push_back(_ID); tr.inStack.push_back(_C); tr.input = _OBRACK; tr.rule = _S; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_ID); tr.inStack.push_back(_C); tr.input = _CBRACK; tr.rule = _E; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_ID); tr.inStack.push_back(_C); tr.input = _ID; tr.rule = _E; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_ID); tr.inStack.push_back(_C); tr.input = _EPS; tr.rule = _R; g.transRules.push_back(tr); }
 
+    { struct TransRule tr; tr.inStack.push_back(_HASH); tr.input = _OBRACK; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_HASH); tr.input = _CBRACK; tr.rule = _E; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.input = _ID; tr.rule = _S; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.input = _EPS; tr.rule = _E; g.transRules.push_back(tr); }
 
+    { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(ID); tr.input = _OBRACK; tr.rule = _E; g.transRules.push_back(tr); }
+    { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(ID); tr.input = _CBRACK; tr.rule = _E; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(ID); tr.input = _ID; tr.rule = _S; g.transRules.push_back(tr); }
     { struct TransRule tr; tr.inStack.push_back(_HASH); tr.inStack.push_back(ID); tr.input = _EPS; tr.rule = _A; g.transRules.push_back(tr); }
     
