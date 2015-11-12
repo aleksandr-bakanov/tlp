@@ -606,6 +606,11 @@ void collectResources(Node* n) {
             resourceTables.push_back(newTable);
             resourceTableStack.push(newTable);
             currentResourceTable = newTable;
+            // Запишем сразу в локальную таблицу переменную с названием
+            // функции и типом возвращаемого значения функции.
+            Resource r2d2 (nameChild->data.value(), R_VAR, type, "");
+            currentResourceTable->table.insert(
+                    std::pair<std::string, Resource>(r2d2.name, r2d2));
         }
     }
 
