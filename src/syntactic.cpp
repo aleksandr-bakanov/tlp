@@ -882,6 +882,49 @@ void pTree(Node* &root) {
     std::cout << std::endl;
 }
 
+// Сериализация узла дерева
+void serializationNode(std::ofstream& fout, Node* n, int& numNode) {
+    
+    if (n->parent == NULL) {
+        fout << "\tn" << numNode << ";" << std::endl;
+    }
+    
+    fout << "\tn" << numNode << "[shape=\"";
+    if (n->data.isToken) {
+        fout << "ellipse";
+    } else {
+        fout << "box";
+    }
+    fout << "\", label = ";
+    if (n->data.isToken) {
+        fout << "\"" << n->data.str << "\"";
+    } else {
+        fout << "<<I>" << n->data.str << "</I>>";
+    }
+    fout << "];" << std::endl;
+    
+    // Рекурсивно сериализуем детей
+    int curNumNode = numNode;
+    for (int i = 0; i < n->children.size(); i++) {
+        numNode++;
+        fout << "\tn" << curNumNode << " -> n" << numNode << ";" << std::endl;
+        serializationNode(fout, n->children[i], numNode);
+    }
+}
+
+// Сериализация дерева для его последующего красивого представления.
+void serializationTree(Node* root) {
+    std::ofstream fout("tree.gv");
+    
+    fout << "digraph HelloWorld {" << std::endl;
+    fout << "\tnode [margin=\"0.01\"];" << std::endl;
+    fout << "\trankdir=\"TB\";" << std::endl << std::endl;
+    int numNode = 1;
+    serializationNode(fout, root, numNode);
+    fout << "}" << std::endl;
+    fout.close();
+}
+
 void pOutFoldRules() {
     std::cout << "Fold Rules: [";
     for (int i = 0; i < outFoldRules.size(); i++) {
@@ -997,6 +1040,8 @@ void syntacticAnalysis() {
 
         Node* root = NULL;
         pTree(root);
+        
+        serializationTree(root);
         
         TableOfResource* firstResourceTable = new TableOfResource();
         resourceTables.push_back(firstResourceTable);

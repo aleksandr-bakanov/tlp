@@ -10,4 +10,4 @@ main.o: src\main.cpp
 	g++ -ggdb -c src\main.cpp -o bin\main.o
 
 clean:
-	rm -rf bin main.exe
+	rm -rf bin main.exe tree.gv tree.png
