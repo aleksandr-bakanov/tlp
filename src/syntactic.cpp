@@ -923,7 +923,7 @@ void serializationTree(Node* root) {
     
     fout << "digraph HelloWorld {" << std::endl;
     fout << "\tnode [margin=\"0.01\"];" << std::endl;
-    fout << "\trankdir=\"TB\";" << std::endl << std::endl;
+    fout << "\trankdir=\"LR\";" << std::endl << std::endl;
     int numNode = 1;
     serializationNode(fout, root, numNode);
     fout << "}" << std::endl;
