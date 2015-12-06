@@ -1,4 +1,15 @@
 //---------------------------------------------------------------
+// Table of resources relations
+//             V_INTEGER   V_REAL    V_BOOLEAN   V_STRING
+// V_INTEGER   V_INTEGER   V_REAL     (^___^)     (^___^)
+// V_REAL      V_REAL      V_REAL     (^___^)     (^___^)
+// V_BOOLEAN   (^___^)     (^___^)   V_BOOLEAN    (^___^)
+// V_STRING    (^___^)     (^___^)    (^___^)     (^___^)
+//
+//---------------------------------------------------------------
+
+
+//---------------------------------------------------------------
 // Type of resources
 typedef enum {
     R_VAR,
@@ -22,6 +33,7 @@ typedef enum {
 class Resource {
 public:
     Resource(std::string name, resource_t res, value_t type, std::string value);
+    Resource();
     
     // Name of resource
     std::string name;
@@ -33,7 +45,21 @@ public:
     std::string value;
     
     void print();
+    
+    static std::string valueTypeToStr(value_t t);
 };
+
+std::string Resource::valueTypeToStr(value_t t) {
+    std::string val_s;
+    switch (t) {
+        case V_INTEGER: val_s = "_INTEGER"; break;
+        case V_REAL: val_s = "_REAL"; break;
+        case V_BOOLEAN: val_s = "_BOOLEAN"; break;
+        case V_STRING: val_s = "_STRING"; break;
+        case V_NULL: val_s = "_NULL"; break;
+    }
+    return val_s;
+}
 
 void Resource::print() {
     std::string res_s;
@@ -59,6 +85,13 @@ Resource::Resource(std::string name, resource_t res, value_t type, std::string v
     this->res = res;
     this->type = type;
     this->value = value;
+}
+
+Resource::Resource() {
+    this->name = "";
+    this->res = R_VAR;
+    this->type = V_NULL;
+    this->value = "";
 }
 
 //---------------------------------------------------------------

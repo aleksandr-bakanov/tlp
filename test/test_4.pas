@@ -6,17 +6,17 @@ const str = 'TODO';
 const int = 123;
 label lab, bel;
 
-operator + (a, b : string) asd:real;
-begin
-
-end;
+operator + (a: integer; b : string) asd:real;
+    begin
+        
+    end;
 
 function func : string;
-        var i: char;
-            r: real;
-        begin
-            {new (r);}
-        end;
+    var i: char;
+        r: real;
+    begin
+        {new (r);}
+    end;
 
 begin
     write((1 + 2));

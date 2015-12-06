@@ -563,6 +563,16 @@ void giveMeLabels(Node* n) {
     }
 }
 
+value_t getVariableType(Node* n) {
+    switch (n->data.id) {
+        case _INT: return V_INTEGER;
+        case _REAL: return V_REAL;
+        case _BOOL: return V_BOOLEAN;
+        case _STRING: return V_STRING;
+        default: return V_NULL;
+    }
+}
+
 // Сбор ресурсов с подконтрольных территорий (всего дерева).
 void collectResources(Node* n) {
     // Если есть дети, надо проверить нулевого, он может быть
@@ -584,14 +594,7 @@ void collectResources(Node* n) {
         else if (id == HFUN) {
             Node* nameChild = n->children[0]->children[1]->children[0];
             Node* typeChild = n->children[0]->children[3]->children[0];
-            value_t type = V_NULL;
-            switch (typeChild->data.id) {
-                case _INT: type = V_INTEGER; break;
-                case _REAL: type = V_REAL; break;
-                case _BOOL: type = V_BOOLEAN; break;
-                case _STRING: type = V_STRING; break;
-                default: type = V_NULL; break;
-            }
+            value_t type = getVariableType(typeChild);
             Resource r (nameChild->data.value(), R_FUNC, type, "");
             std::pair<std::map<std::string, Resource>::iterator, bool>
                 ret = currentResourceTable->table.insert(
@@ -611,6 +614,38 @@ void collectResources(Node* n) {
             Resource r2d2 (nameChild->data.value(), R_VAR, type, "");
             currentResourceTable->table.insert(
                     std::pair<std::string, Resource>(r2d2.name, r2d2));
+        }
+        else if (id == _OPER) {
+            Resource operand_1, operand_2, return_value;
+            std::string oper_name = pTT(n->children[1]->children[0]->data.id);
+            Node* ovar = n->children[3];
+            operand_1.name = ovar->children[0]->children[0]->data.value();
+            if (ovar->children[1]->data.id == _COLUM) {
+                value_t oper_1_type = getVariableType(ovar->children[2]->children[0]);
+                operand_1.type = oper_1_type;
+                operand_2.name = ovar->children[4]->children[0]->data.value();
+                value_t oper_2_type = getVariableType(ovar->children[6]->children[0]);
+                operand_2.type = oper_2_type;
+            }
+            else {
+                operand_2.name = ovar->children[2]->children[0]->data.value();
+                value_t operands_type = getVariableType(ovar->children[4]->children[0]);
+                operand_1.type = operands_type;
+                operand_2.type = operands_type;
+            }
+            return_value.name = n->children[5]->children[0]->data.value();
+            value_t return_value_type = getVariableType(n->children[7]->children[0]);
+            return_value.type = return_value_type;
+            operand_1.res = operand_2.res = return_value.res = R_VAR;
+            
+            oper_name += Resource::valueTypeToStr(operand_1.type) + Resource::valueTypeToStr(operand_2.type);
+            
+            // Создаем локальную таблицу ресурсов
+            TableOfResource* newTable = new TableOfResource(oper_name);
+            resourceTables.push_back(newTable);
+            newTable->table.insert(std::pair<std::string, Resource>(operand_1.name, operand_1));
+            newTable->table.insert(std::pair<std::string, Resource>(operand_2.name, operand_2));
+            newTable->table.insert(std::pair<std::string, Resource>(return_value.name, return_value));
         }
     }
 
