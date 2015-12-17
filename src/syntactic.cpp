@@ -1012,7 +1012,7 @@ void pSyntaxErrorAt(std::vector<Symbol> tokens, int index) {
     std::cout << "]\n";
 }
 
-void syntacticAnalysis() {
+bool syntacticAnalysis() {
     // Epsilon Symbol
     Symbol epsSymbol (_EPS, "$", 1);
     tokens.push_back(epsSymbol);
@@ -1095,9 +1095,12 @@ void syntacticAnalysis() {
             std::cout << "Table <" << resourceTables[i]->name << ">:" << std::endl;
             resourceTables[i]->print();
         }
+        
+        return true;
     }
     else {
         std::cout << "\n\nSentence analysis is STOPPED at symbol marked by arrows:\n";
         pSyntaxErrorAt(tokensCopy, tokensCopy.size() - tokens.size());
+        return false;
     }
 }

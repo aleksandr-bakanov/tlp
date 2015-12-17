@@ -16,6 +16,7 @@ function func : string;
         r: real;
     begin
         {new (r);}
+        read(t);
     end;
 
 begin

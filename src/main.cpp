@@ -18,6 +18,7 @@
 #include "grams.cpp"
 #include "TableOfResource.cpp"
 #include "syntactic.cpp"
+#include "Tree.cpp"
 
 
 void printHelp() {
@@ -48,7 +49,15 @@ int main(int argc, char** argv) {
     initGrams();
     
     // Syntactic analysis
-    syntacticAnalysis();
+    if (!syntacticAnalysis()) {
+        return 0;
+    }
+    
+    // Творим фигню
+    Tree::printFoldRules(outFoldRules);
+    std::cout << std::endl;
+    Tree tree = Tree(outFoldRules);
+    tree.print();
     
     return 0;
 }
