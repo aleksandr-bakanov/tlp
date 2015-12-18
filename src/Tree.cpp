@@ -8,7 +8,7 @@
 // Дерево
 class Tree {
 public:
-    Tree(std::vector<OutFoldRule> foldRules);
+    Tree(std::vector<OutFoldRule> foldRules, int amountFunc);
     
     // Вершина дерева
     Node* vertex;
@@ -19,11 +19,15 @@ public:
     static void printFoldRules(std::vector<OutFoldRule> foldRules);
 };
 
-Tree::Tree(std::vector<OutFoldRule> foldRules) {
+Tree::Tree(std::vector<OutFoldRule> foldRules, int amountFunc) {
     // TODO: Обработка функций и перегрузок
     
-    // Запихиваем нетерминал в вершину
-    vertex = new Node(Symbol(PROG, pTT(PROG).c_str(), isTokenTerm(PROG)), NULL);
+    // Запихиваем терминал _PROG в вершину
+    vertex = new Node(Symbol(_PROG, pTT(_PROG).c_str(), isTokenTerm(_PROG)), NULL);
+    // Запихиваем PROG для главной области видимости
+    Node* ch = new Node(Symbol(PROG, pTT(PROG).c_str(), isTokenTerm(PROG)), vertex);
+    vertex->children.push_back(ch);
+    amountFunc--;
     
     // Разбираем все правила, которые не относятся к объявлению ресурсов
     for (int i = outFoldRules.size() - 1; i >= 0; i--) {
@@ -499,7 +503,28 @@ Tree::Tree(std::vector<OutFoldRule> foldRules) {
                 // No make
             }
         }
-        // Если не нашли, то построение дерева закончено и цикл завершится сам собой.
+        // Если не нашли, то построение дерева для главной области видимости закончено
+        // Нужно глянуть есть ли еще области видмости и достроить дерево для них
+        else {
+            if (amountFunc != 0) {
+                if (ofr.gNum == 15) {
+                    // Запихиваем PROG для новой области видимости
+                    Node* ch = new Node(Symbol(PROG, pTT(PROG).c_str(), isTokenTerm(PROG)), vertex);
+                    if (vertex->children.size() == 1) {
+                        vertex->children.push_back(ch);
+                    }
+                    else {
+                        vertex->children.insert(vertex->children.begin()+1, ch);
+                    }
+                    amountFunc--;
+                    // Нужно еще раз глянуть текущее правило свертки
+                    i++;
+                }
+            }
+            else {
+                break;
+            }
+        }
     }
     
 }

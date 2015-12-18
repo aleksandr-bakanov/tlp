@@ -53,10 +53,11 @@ int main(int argc, char** argv) {
         return 0;
     }
     
-    // Творим фигню
-    Tree::printFoldRules(outFoldRules);
-    std::cout << std::endl;
-    Tree tree = Tree(outFoldRules);
+    // Вывод всех использованных правил сверток
+    //Tree::printFoldRules(outFoldRules);
+    //std::cout << std::endl;
+    // Создание дерева вывода по использованным правилам сверток и количеству областей видимости в программе 
+    Tree tree = Tree(outFoldRules, resourceTables.size());
     tree.print();
     
     return 0;
