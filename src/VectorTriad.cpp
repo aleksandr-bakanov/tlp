@@ -280,7 +280,7 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
         numTr++;
         triads.push_back(triad1);
         // Рекурсия
-        makeTriads(vertex->children[2], numTr);
+        if (vertex->children.size() == 3) makeTriads(vertex->children[2], numTr);
         str = "[";
         std::ostringstream temp1;
         temp1 << (numTr);

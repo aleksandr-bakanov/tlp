@@ -15,7 +15,6 @@ function func : string;
     var i: char;
         r: real;
     begin
-        {new (r);}
         read(t);
     end;
 

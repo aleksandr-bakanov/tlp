@@ -47,5 +47,9 @@ asd: read (qwe);
             write (str);
         end; 
     read (sdf, hj);
+    if (a < b ) then write (str);
+    
+    { qwe := substr('abcdef', 3, 4); }
+    
 end.
 
