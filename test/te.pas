@@ -1,10 +1,11 @@
 program hello;
 
 begin
-    j := (i + 78.4 / 12) * 3;
-    j := +9;
-    write ( 1+2, 'sdf', str );
-    if ({ 'sdf' <= 'wqe' }  a < b ) then
+    write ( (i + 78.4 / 12) * 3, 'sdf', str );
+    j := (i + 78.4 / 12) * 3 + length(asd);
+    read (sdf, hj);
+    { j := +9;
+    if (a < b ) then
         begin
             x := d + 9 * 2 - 2;
             write (183);
@@ -14,7 +15,7 @@ begin
 asd: read (qwe);
     while (c) do
         begin
-            str := qw{ concat('sad', str) };
+            str := qw;
             write (str);
         end; 
     
@@ -22,9 +23,29 @@ asd: read (qwe);
     str := concat('l,kmjnhbgvf', asd);
     str := substr('l,kmjnhbgvf', asd, 34);
     
-    as := 'dsc';
+    as := 12 + length('qwe');
     sd := true;
-    df := -56;
-    { if (false) then read(t); }
+    df := -56; }
+{ lab:write(length('qwe'));
+    goto lab;
+    str := concat('asdfgh', d);
+    str := search('asdfgh', d);
+    d := NOT (a AND b OR c); }
+    if (a < b ) then
+        begin
+            x := d + 9 * 2 - 2;
+            write (183);
+        end
+    else
+        begin
+            str := length('l,kmjnhbgvf');
+            read (w);
+        end;
+    while (ca < b ) do
+        begin
+            str := qw;
+            write (str);
+        end; 
+    read (sdf, hj);
 end.
 

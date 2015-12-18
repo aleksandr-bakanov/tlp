@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <wchar.h>
 #include <map>
+#include <sstream>
 
 #include "state_t.cpp"
 #include "token_t.cpp"
@@ -19,6 +20,8 @@
 #include "TableOfResource.cpp"
 #include "syntactic.cpp"
 #include "Tree.cpp"
+#include "Triad.cpp"
+#include "VectorTriad.cpp"
 
 
 void printHelp() {
@@ -54,11 +57,21 @@ int main(int argc, char** argv) {
     }
     
     // Вывод всех использованных правил сверток
-    //Tree::printFoldRules(outFoldRules);
-    //std::cout << std::endl;
+#ifdef DEBUG
+    Tree::printFoldRules(outFoldRules);
+    std::cout << std::endl;
+#endif
     // Создание дерева вывода по использованным правилам сверток и количеству областей видимости в программе 
-    Tree tree = Tree(outFoldRules, resourceTables.size());
-    tree.print();
+    Tree* tree = new Tree(outFoldRules, resourceTables.size());
+    std::cout << std::endl;
+    std::cout << "Output tree:" << std::endl;
+    tree->print();
+    
+    // Создаем список триад
+    VectorTriad* vectorTriad = new VectorTriad(tree);
+    std::cout << std::endl;
+    std::cout << "Triads:" << std::endl;
+    vectorTriad->print();
     
     return 0;
 }

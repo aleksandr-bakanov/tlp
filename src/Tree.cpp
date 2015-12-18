@@ -75,13 +75,17 @@ Tree::Tree(std::vector<OutFoldRule> foldRules, int amountFunc) {
                 }
                 else if (ofr.rNum == 1) {
                     n->data = Symbol(_PLUS, pTT(_PLUS).c_str(), isTokenTerm(_PLUS));
-                    Node* ch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
+                    Node* ch = new Node(Symbol(_NUM, "_NUM[0]", isTokenTerm(_NUM)), n);
                     n->children.push_back(ch);
+                    Node* cch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
+                    n->children.push_back(cch);
                 }
                 else if (ofr.rNum == 2) {
                     n->data = Symbol(_MINUS, pTT(_MINUS).c_str(), isTokenTerm(_MINUS));
-                    Node* ch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
+                    Node* ch = new Node(Symbol(_NUM, "_NUM[0]", isTokenTerm(_NUM)), n);
                     n->children.push_back(ch);
+                    Node* cch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
+                    n->children.push_back(cch);
                 }
                 else if (ofr.rNum == 3) {
                     n->data = Symbol(_PLUS, pTT(_PLUS).c_str(), isTokenTerm(_PLUS));
@@ -228,7 +232,7 @@ Tree::Tree(std::vector<OutFoldRule> foldRules, int amountFunc) {
             }
             else if (ofr.gNum == 10) {
                 if (ofr.rNum == 0) {
-                    n->data = Symbol(_COLUM, pTT(_COLUM).c_str(), isTokenTerm(_COLUM));
+                    n->data = Symbol(_LABEL, pTT(_LABEL).c_str(), isTokenTerm(_LABEL));
                     Node* ch = new Node(Symbol(ID, pTT(ID).c_str(), isTokenTerm(ID)), n);
                     n->children.push_back(ch);
                     Node* cch = new Node(Symbol(OP, pTT(OP).c_str(), isTokenTerm(OP)), n);
@@ -532,7 +536,6 @@ Tree::Tree(std::vector<OutFoldRule> foldRules, int amountFunc) {
 // Печать дерева
 // Используются функции из syntactic.cpp, чтобы не определять их еще один раз
 void Tree::print() {
-    std::cout << "print" << std::endl;
     tabs = 0;
     pipes = 1;
     return showNode(vertex, false);
