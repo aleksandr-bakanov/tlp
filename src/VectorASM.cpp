@@ -22,14 +22,13 @@ public:
     // Обрабатываем триады
     void triadsToCode(std::vector<TableOfResource*> resourceTable, VectorTriad* vectorTriad);
     
-    void printToConsole();
+    void print(std::ostream& out);
 };
 
 // Обрабатываем ресурсы
 void VectorASM::resourceToCode(std::vector<TableOfResource*> resourceTable) {
     // TODO: Нет обработок функций
     for (int i = 0; i < resourceTable.size(); i++) {
-        std::cout << "qwert" << std::endl;
         // Обходим map
         std::map<std::string, Resource>::iterator it;
         for (it = resourceTable[i]->table.begin(); it != resourceTable[i]->table.end(); it++) {
@@ -89,22 +88,48 @@ void VectorASM::resourceToCode(std::vector<TableOfResource*> resourceTable) {
 }
 
 // Обрабатываем триады
-void triadsToCode(std::vector<TableOfResource*> resourceTable, VectorTriad* vectorTriad) {
+void VectorASM::triadsToCode(std::vector<TableOfResource*> resourceTable, VectorTriad* vectorTriad) {
     // Номер области видимости
     int amountScope = -1;
     std::vector<Triad>::iterator it;
     for (it = vectorTriad->triads.begin(); it != vectorTriad->triads.end(); it++) {
-        std::string str = "    ";
-        if (it->operation->id == _WRITE) {
-            str += "invoke StdOut, ";
-            if (it->operand1->id == _ID) {
-                str += "addr ";
-                str += it->operand1->value();
+        // std::string str = "    ";
+        if (it->operation->id == _PROG) {
+            if (it->operand1->id == _BEGIN) {
+                amountScope++;
+                if (amountScope == 0) {
+                    code.push_back("main PROC");
+                }
+                else {
+                    std::string str = resourceTable[amountScope]->name;
+                    str += " PROC";
+                    code.push_back(str);
+                }
             }
-            else if (it->operand1->id == _STR) {
-                str += "addr ";
-                str += it->operand1->value();
+            else if (it->operand1->id == _END) {
+                if (amountScope == 0) {
+                    code.push_back("    invoke ExitProcess, 0");
+                    code.push_back("main endp");
+                }
+                else {
+                    std::string str = resourceTable[amountScope]->name;
+                    str += " endp";
+                    code.push_back(str);
+                }
             }
+        }
+        else if (it->operation->id == _WRITE) {
+            // std::string str = "    invoke StdOut, ";
+            // if (it->operand1->id == _ID) {
+                // str += "addr ";
+                // str += it->operand1->value();
+                // code.push_back(str);
+            // }
+            // else if (it->operand1->id == _STR) {
+                // str += "addr ";
+                // str += it->operand1->value();
+                // code.push_back(str);
+            // }
         }
         
         
@@ -130,19 +155,19 @@ VectorASM::VectorASM(std::vector<TableOfResource*> resourceTable, VectorTriad* v
     code.push_back(".code");
     code.push_back("start:");
     
-    // triadsToCode(vectorTriad);
+    triadsToCode(resourceTable, vectorTriad);
     
     code.push_back("end start");
 }
 
-void VectorASM::printToConsole() {
+void VectorASM::print(std::ostream& out) {
     for (int i = 0; i < head.size(); i++) {
-        std::cout << head[i] << std::endl;
+        out << head[i] << std::endl;
     }
     for (int i = 0; i < data.size(); i++) {
-        std::cout << data[i] << std::endl;
+        out << data[i] << std::endl;
     }
     for (int i = 0; i < code.size(); i++) {
-        std::cout << code[i] << std::endl;
+        out << code[i] << std::endl;
     }
 }

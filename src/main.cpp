@@ -58,10 +58,10 @@ int main(int argc, char** argv) {
     }
     
     // Вывод всех использованных правил сверток
-// #ifdef DEBUG
+#ifdef DEBUG
     Tree::printFoldRules(outFoldRules);
     std::cout << std::endl;
-// #endif
+#endif
     // Создание дерева вывода по использованным правилам сверток и количеству областей видимости в программе 
     Tree* tree = new Tree(outFoldRules, resourceTables.size());
     std::cout << std::endl;
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     VectorASM* vectorASM = new VectorASM(resourceTables, vectorTriad);
     std::cout << std::endl;
     std::cout << "ASM code:" << std::endl;
-    vectorASM->printToConsole();
+    vectorASM->print(std::cout);
     
     return 0;
 }
