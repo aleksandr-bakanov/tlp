@@ -172,14 +172,16 @@ Tree::Tree(std::vector<OutFoldRule> foldRules, int amountFunc) {
                     // No make
                 }
                 else if (ofr.rNum == 7) {
-                    n->data = Symbol(_REL, pTT(_REL).c_str(), isTokenTerm(_REL));
+                    // n->data = Symbol(_REL, pTT(_REL).c_str(), isTokenTerm(_REL));
+                    n->data = ofr.symbols[2];
                     Node* ch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
                     n->children.push_back(ch);
                     Node* cch = new Node(Symbol(AEXP, pTT(AEXP).c_str(), isTokenTerm(AEXP)), n);
                     n->children.push_back(cch);
                 }
                 else if (ofr.rNum == 8) {
-                    n->data = Symbol(_REL, pTT(_REL).c_str(), isTokenTerm(_REL));
+                    // n->data = Symbol(_REL, pTT(_REL).c_str(), isTokenTerm(_REL));
+                    n->data = ofr.symbols[2];
                     Node* ch = new Node(ofr.symbols[1], n);
                     n->children.push_back(ch);
                     Node* cch = new Node(ofr.symbols[3], n);

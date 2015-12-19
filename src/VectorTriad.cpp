@@ -35,6 +35,14 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
             triads.push_back(triad);
             // Рекурсия
             makeTriads(vertex->children[i], numTr);
+            Triad triad1;
+            triad1.operation = &vertex->data;
+            Symbol* s = new Symbol(_END, pTT(_END).c_str(), isTokenTerm(_END));
+            triad1.operand1 = s;
+            triad1.operand2 = NULL;
+            triad1.triadNum = numTr;
+            numTr++;
+            triads.push_back(triad1);
         }
     }
     else if (vertex->data.id == _BEGIN) {
@@ -292,7 +300,8 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
         // Первый ребенок - условие перехода
         // После него должен быть условный переход
         Triad triad;
-        triad.operation = &vertex->data;
+        Symbol* s = new Symbol(_IF, pTT(_IF).c_str(), isTokenTerm(_IF));
+        triad.operation = s;
         int oldNumTr = numTr;
         // Рекурсия
         makeTriads(vertex->children[0], numTr);
@@ -309,7 +318,7 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
             
             triad.operand1 = s;
         }
-        Symbol* s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
+        s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
         triad.operand2 = s;
         triad.triadNum = numTr;
         numTr++;

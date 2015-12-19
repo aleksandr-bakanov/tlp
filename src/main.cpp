@@ -22,6 +22,7 @@
 #include "Tree.cpp"
 #include "Triad.cpp"
 #include "VectorTriad.cpp"
+#include "VectorASM.cpp"
 
 
 void printHelp() {
@@ -57,10 +58,10 @@ int main(int argc, char** argv) {
     }
     
     // Вывод всех использованных правил сверток
-#ifdef DEBUG
+// #ifdef DEBUG
     Tree::printFoldRules(outFoldRules);
     std::cout << std::endl;
-#endif
+// #endif
     // Создание дерева вывода по использованным правилам сверток и количеству областей видимости в программе 
     Tree* tree = new Tree(outFoldRules, resourceTables.size());
     std::cout << std::endl;
@@ -72,6 +73,12 @@ int main(int argc, char** argv) {
     std::cout << std::endl;
     std::cout << "Triads:" << std::endl;
     vectorTriad->print();
+    
+    // Получаем код
+    VectorASM* vectorASM = new VectorASM(resourceTables, vectorTriad);
+    std::cout << std::endl;
+    std::cout << "ASM code:" << std::endl;
+    vectorASM->printToConsole();
     
     return 0;
 }

@@ -1,9 +1,37 @@
 program hello;
+var str:string;
+var i:integer;
+    j:real;
+    
+const str_const = 'TODO'; a = TrUe;
+
+const int = 123;
+label lab, bel;
 
 begin
     write ( (i + 78.4 / 12) * 3, 'sdf', str );
     j := (i + 78.4 / 12) * 3 + length(asd);
     read (sdf, hj);
+    
+    if (a < b ) then
+        begin
+            x := d + 9 * 2 - 2;
+            write (183);
+        end
+    else
+        begin
+            str := length('l,kmjnhbgvf');
+            read (w);
+        end;
+    while (ca < b ) do
+        begin
+            str := qw;
+            write (str);
+        end; 
+    read (sdf, hj);
+    if (a < b ) then write (str);
+    
+    { qwe := substr('abcdef', 3, 4); }
     { j := +9;
     if (a < b ) then
         begin
@@ -31,25 +59,5 @@ asd: read (qwe);
     str := concat('asdfgh', d);
     str := search('asdfgh', d);
     d := NOT (a AND b OR c); }
-    if (a < b ) then
-        begin
-            x := d + 9 * 2 - 2;
-            write (183);
-        end
-    else
-        begin
-            str := length('l,kmjnhbgvf');
-            read (w);
-        end;
-    while (ca < b ) do
-        begin
-            str := qw;
-            write (str);
-        end; 
-    read (sdf, hj);
-    if (a < b ) then write (str);
-    
-    { qwe := substr('abcdef', 3, 4); }
-    
 end.
 
