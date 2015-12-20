@@ -76,9 +76,13 @@ int main(int argc, char** argv) {
     
     // Получаем код
     VectorASM* vectorASM = new VectorASM(resourceTables, vectorTriad);
+    // Вывод кода на консоль
     std::cout << std::endl;
     std::cout << "ASM code:" << std::endl;
     vectorASM->print(std::cout);
+    // Вывод кода в файл a.asm
+    std::ofstream fout("a.asm");
+    vectorASM->print(fout);
     
     return 0;
 }

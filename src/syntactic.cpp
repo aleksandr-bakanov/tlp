@@ -1083,7 +1083,7 @@ bool syntacticAnalysis() {
         
         serializationTree(root);
         
-        TableOfResource* firstResourceTable = new TableOfResource();
+        TableOfResource* firstResourceTable = new TableOfResource("main");
         resourceTables.push_back(firstResourceTable);
         resourceTableStack.push(firstResourceTable);
         currentResourceTable = firstResourceTable;
