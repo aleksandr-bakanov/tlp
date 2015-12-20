@@ -498,7 +498,9 @@ void giveMeVars(Node* n) {
     // Собираем vars в ресурсы
     std::vector<Resource> vars;
     for (int i = 0; i < rvars.size(); i++) {
-        collectVars(rvars[i], vars, true);
+        std::vector<Resource> localVars;
+        collectVars(rvars[i], localVars, true);
+        vars.insert(vars.end(), localVars.begin(), localVars.end());
     }
     // Сохраняем ресурсы в текущую таблицу.
     for (int i = 0; i < vars.size(); i++) {
