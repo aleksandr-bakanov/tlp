@@ -263,45 +263,94 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
             
             triad.operand1 = s;
         }
-        Symbol* s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
-        triad.operand2 = s;
+        triad.operand2 = NULL;
         triad.triadNum = numTr;
         numTr++;
         triads.push_back(triad);
         // Второй ребенок - блок с командами
         // Рекурсия
         makeTriads(vertex->children[1], numTr);
-        std::string str = "[";
-        std::ostringstream temp;
-        temp << (numTr+1);
-        str += temp.str();
-        str += "]";
-        s->str = str;
+        
         // Третий ребенок - блок с командами
-        Triad triad1;
-        s = new Symbol(_GOTO, pTT(_GOTO).c_str(), isTokenTerm(_GOTO));
-        triad1.operation = s;
-        s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
-        triad1.operand1 = s;
-        triad1.operand2 = NULL;
-        triad1.triadNum = numTr;
+        if (vertex->children.size() == 3) {
+            Triad triad1;
+            Symbol* s = new Symbol(_ELSE, pTT(_ELSE).c_str(), isTokenTerm(_ELSE));
+            triad1.operation = s;
+            triad1.operand1 = NULL;
+            triad1.operand2 = NULL;
+            triad1.triadNum = numTr;
+            numTr++;
+            triads.push_back(triad1);
+            // Рекурсия
+            makeTriads(vertex->children[2], numTr);
+        }
+        Triad triad2;
+        Symbol* s = new Symbol(_ENDIF, pTT(_ENDIF).c_str(), isTokenTerm(_ENDIF));
+        triad2.operation = s;
+        triad2.operand1 = NULL;
+        triad2.operand2 = NULL;
+        triad2.triadNum = numTr;
         numTr++;
-        triads.push_back(triad1);
-        // Рекурсия
-        if (vertex->children.size() == 3) makeTriads(vertex->children[2], numTr);
-        str = "[";
-        std::ostringstream temp1;
-        temp1 << (numTr);
-        str += temp1.str();
-        str += "]";
-        s->str = str;
+        triads.push_back(triad2);
+                
+        // // Первый ребенок - условие перехода
+        // // После него должен быть условный переход
+        // Triad triad;
+        // triad.operation = &vertex->data;
+        // int oldNumTr = numTr;
+        // // Рекурсия
+        // makeTriads(vertex->children[0], numTr);
+        // if (oldNumTr == numTr) {
+            // triad.operand1 = &vertex->children[0]->data;
+        // }
+        // else {
+            // std::string str = "[";
+            // std::ostringstream temp;
+            // temp << (numTr-1);
+            // str += temp.str();
+            // str += "]";
+            // Symbol* s = new Symbol(_OLD, str, isTokenTerm(_OLD));
+            
+            // triad.operand1 = s;
+        // }
+        // Symbol* s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
+        // triad.operand2 = s;
+        // triad.triadNum = numTr;
+        // numTr++;
+        // triads.push_back(triad);
+        // // Второй ребенок - блок с командами
+        // // Рекурсия
+        // makeTriads(vertex->children[1], numTr);
+        // std::string str = "[";
+        // std::ostringstream temp;
+        // temp << (numTr+1);
+        // str += temp.str();
+        // str += "]";
+        // s->str = str;
+        // // Третий ребенок - блок с командами
+        // Triad triad1;
+        // s = new Symbol(_GOTO, pTT(_GOTO).c_str(), isTokenTerm(_GOTO));
+        // triad1.operation = s;
+        // s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
+        // triad1.operand1 = s;
+        // triad1.operand2 = NULL;
+        // triad1.triadNum = numTr;
+        // numTr++;
+        // triads.push_back(triad1);
+        // // Рекурсия
+        // if (vertex->children.size() == 3) makeTriads(vertex->children[2], numTr);
+        // str = "[";
+        // std::ostringstream temp1;
+        // temp1 << (numTr);
+        // str += temp1.str();
+        // str += "]";
+        // s->str = str;
     }
     else if (vertex->data.id == _WHILE) {
         // Первый ребенок - условие перехода
         // После него должен быть условный переход
         Triad triad;
-        Symbol* s = new Symbol(_IF, pTT(_IF).c_str(), isTokenTerm(_IF));
-        triad.operation = s;
+        triad.operation = &vertex->data;
         int oldNumTr = numTr;
         // Рекурсия
         makeTriads(vertex->children[0], numTr);
@@ -318,31 +367,21 @@ void VectorTriad::makeTriads(Node* vertex, int& numTr) {
             
             triad.operand1 = s;
         }
-        s = new Symbol(_OLD, "_OLD", isTokenTerm(_OLD));
-        triad.operand2 = s;
+        triad.operand2 = NULL;
         triad.triadNum = numTr;
         numTr++;
         triads.push_back(triad);
         // Второй ребенок - блок с командами
         // Рекурсия
         makeTriads(vertex->children[1], numTr);
-        std::string str = "[";
-        std::ostringstream temp;
-        temp << (numTr+1);
-        str += temp.str();
-        str += "]";
-        s->str = str;
-        // В конец блока надо добавить безусловный переход к условию
+        // После блока команд необходимо еще раз вычислить условие продолжения цикла
+        // Рекурсия
+        makeTriads(vertex->children[0], numTr);
+        // В конец блока надо добавить _ENDW
         Triad triad1;
-        s = new Symbol(_GOTO, pTT(_GOTO).c_str(), isTokenTerm(_GOTO));
+        Symbol* s = new Symbol(_ENDW, pTT(_ENDW).c_str(), isTokenTerm(_ENDW));
         triad1.operation = s;
-        str = "[";
-        std::ostringstream temp1;
-        temp1 << (oldNumTr);
-        str += temp1.str();
-        str += "]";
-        s = new Symbol(_OLD, str, isTokenTerm(_OLD));
-        triad1.operand1 = s;
+        triad1.operand1 = NULL;
         triad1.operand2 = NULL;
         triad1.triadNum = numTr;
         numTr++;
